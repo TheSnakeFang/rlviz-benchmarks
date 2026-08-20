@@ -1,0 +1,29 @@
+{
+  "schema_version": "rlviz.dev/benchmark-catalog/v1",
+  "slug": "terminal-bench-2",
+  "name": "Terminal-Bench 2.0",
+  "catalog_state": "source-pinned",
+  "summary": "Official terminal-agent benchmark source pinned for provenance. No tasks or trajectories are republished yet.",
+  "upstream": {
+    "kind": "github",
+    "url": "https://github.com/harbor-framework/terminal-bench-2",
+    "revision": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+    "version": "terminal-bench@2.0",
+    "retrieved_at": "2026-08-20"
+  },
+  "license": {
+    "status": "verified",
+    "spdx": "Apache-2.0",
+    "redistribution": "allowed",
+    "evidence_url": "https://github.com/harbor-framework/terminal-bench-2/blob/2fd12b88aafdd04a52c298e3940bcb189f9766d6/LICENSE"
+  },
+  "quality": {
+    "review_state": "not-reviewed",
+    "note": "A source pin is not a quality endorsement. Task, environment, verifier, and solvability review has not been performed here."
+  },
+  "references": [
+    { "label": "Harbor harness", "url": "https://github.com/harbor-framework/harbor" }
+  ],
+  "trajectories": []
+}
+

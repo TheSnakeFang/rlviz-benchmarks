@@ -1,0 +1,28 @@
+{
+  "schema_version": "rlviz.dev/benchmark-catalog/v1",
+  "slug": "swe-rebench-v2",
+  "name": "SWE-rebench V2",
+  "catalog_state": "source-pinned",
+  "summary": "Language-agnostic software-engineering benchmark dataset pinned at an immutable Hugging Face revision.",
+  "upstream": {
+    "kind": "huggingface",
+    "url": "https://huggingface.co/datasets/nebius/SWE-rebench-V2",
+    "revision": "475dd5e8703bb5fb22dd3c60b5d038b019eba1e0",
+    "version": "SWE-rebench V2",
+    "retrieved_at": "2026-08-20"
+  },
+  "license": {
+    "status": "verified",
+    "spdx": "CC-BY-4.0",
+    "redistribution": "allowed",
+    "evidence_url": "https://huggingface.co/datasets/nebius/SWE-rebench-V2/blob/475dd5e8703bb5fb22dd3c60b5d038b019eba1e0/LICENSE"
+  },
+  "quality": {
+    "review_state": "not-reviewed",
+    "note": "Dataset generation and filtering claims are upstream claims until independently reproduced at this exact revision."
+  },
+  "references": [
+    { "label": "Generation and evaluation tooling", "url": "https://github.com/SWE-rebench/SWE-rebench-V2" }
+  ],
+  "trajectories": []
+}

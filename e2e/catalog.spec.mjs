@@ -26,3 +26,15 @@ test("filters records and remains readable at mobile width", async ({ page }) =>
   expect(overflow).toBe(0);
   await expect(page.getByText("none published", { exact: true })).toHaveCount(2);
 });
+
+test("opens an exact benchmark detail without hiding provenance gaps", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Harbor-Index 1.4" }).click();
+  await expect(page).toHaveURL(/benchmark\.html\?slug=harbor-index-1-4/);
+  await expect(page.getByRole("heading", { level: 1, name: "Harbor-Index 1.4" })).toBeVisible();
+  await expect(page.getByText("35f01ec42b14c2b5da476099f5b0d209240bca5b", { exact: true })).toBeVisible();
+  await expect(page.getByText(/Harbor job 5fab3f7b-0e44-4924-bbed-026e8387ef84/)).toBeVisible();
+  await expect(page.getByText(/source record only as of 2026-08-20/)).toBeVisible();
+  await expect(page.getByText("Absence of a claim is not a quality endorsement.", { exact: false })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+});

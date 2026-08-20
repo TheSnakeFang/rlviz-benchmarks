@@ -8,14 +8,15 @@
 - Evidence-grounded claim and repair schema
 - GitHub-native submission, review, stewardship, and deterministic contributor credit
 - Revision-pinned Harbor submission records, optional public job links, and explicit availability states
+- Benchmark detail pages for source provenance, runs, and evidence claims
 
 ## Next
 
 1. Publish a small licensed set of reviewed trajectories for the four initial
    benchmarks. Each entry must pin the task, environment, verifier, harness,
    model, agent, run, bundle, and source revisions.
-2. Add task and trajectory detail pages without introducing a novel aggregate
-   leaderboard.
+2. Add task and trajectory detail pages once the first publishable trajectory
+   passes the publication boundary.
 3. Evaluate stable Harbor Hub trial URLs as a task-level import boundary. Job
    links are supported; do not duplicate Harbor's runner, registry, or files.
 4. Move immutable records to a database only when catalog volume or concurrent

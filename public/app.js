@@ -35,7 +35,10 @@ function render() {
 function benchmarkCard(record) {
   const article = element("article", "benchmark");
   const identity = element("div");
-  identity.append(element("h3", "", record.name), element("span", `badge ${record.catalog_state}`, record.catalog_state.replaceAll("-", " ")));
+  const heading = element("h3");
+  const detailLink = element("a", "benchmark-link", record.name); detailLink.href = `/benchmark.html?slug=${encodeURIComponent(record.slug)}`;
+  heading.append(detailLink);
+  identity.append(heading, element("span", `badge ${record.catalog_state}`, record.catalog_state.replaceAll("-", " ")));
   const narrative = element("div");
   narrative.append(element("p", "benchmark-summary", record.summary), element("p", "quality-note", record.quality.note));
   const details = element("dl", "facts");

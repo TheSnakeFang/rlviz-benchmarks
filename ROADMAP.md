@@ -7,6 +7,7 @@
 - Digest-pinned handoff to the local-first RLViz reader
 - Evidence-grounded claim and repair schema
 - GitHub-native submission, review, stewardship, and deterministic contributor credit
+- Revision-pinned Harbor submission records, optional public job links, and explicit availability states
 
 ## Next
 
@@ -15,8 +16,8 @@
    model, agent, run, bundle, and source revisions.
 2. Add task and trajectory detail pages without introducing a novel aggregate
    leaderboard.
-3. Evaluate stable Harbor Hub job and trial URLs as reciprocal source links and
-   an import boundary. Do not duplicate Harbor's runner or registry.
+3. Evaluate stable Harbor Hub trial URLs as a task-level import boundary. Job
+   links are supported; do not duplicate Harbor's runner, registry, or files.
 4. Move immutable records to a database only when catalog volume or concurrent
    review makes repository-backed records inadequate.
 5. Add account-backed claims and stewardship at that boundary. Prefer GitHub

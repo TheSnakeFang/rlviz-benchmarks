@@ -24,5 +24,6 @@
   "references": [
     { "label": "Generation and evaluation tooling", "url": "https://github.com/SWE-rebench/SWE-rebench-V2" }
   ],
+  "external_runs": [],
   "trajectories": []
 }

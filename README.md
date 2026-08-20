@@ -22,6 +22,12 @@ source revision and declares whether its license evidence permits
 redistribution. `npm test` rejects mutable refs, incomplete provenance, unsafe
 bundle URLs, and invalid digests.
 
+Defect claims live in `catalog/claims`. Claims bind one exact task and component
+to the benchmark revision already in the catalog. Non-proposed claims require a
+recorded review decision; resolved claims additionally require an immutable
+upstream repair and validation evidence. Contributor credit is derived from
+those merged records and cannot be edited directly. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Publication boundary
 
 A trajectory can appear only when its record includes:
@@ -38,4 +44,3 @@ A trajectory can appear only when its record includes:
 Authentication, claims, repairs, reputation, and maintainer tools are later
 write surfaces. Reading the catalog and opening RLViz never requires an
 account.
-

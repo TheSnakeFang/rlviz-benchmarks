@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benchmarks.rlviz.dev/schema/claim-v1.json",
+  "title": "RLViz benchmark defect claim",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "subject", "claim_type", "statement", "severity", "status", "evidence", "reporter", "created_at"],
+  "properties": {
+    "schema_version": { "const": "rlviz.dev/benchmark-claim/v1" },
+    "id": { "type": "string", "pattern": "^claim-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["benchmark_slug", "benchmark_revision", "task_id", "component"],
+      "properties": {
+        "benchmark_slug": { "type": "string" },
+        "benchmark_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "task_id": { "type": "string", "minLength": 1 },
+        "component": { "enum": ["prompt", "environment", "verifier", "seed", "metadata", "solvability", "licensing", "trajectory"] }
+      }
+    },
+    "claim_type": { "enum": ["broken", "ambiguous", "unsolvable", "optional-field-mismatch", "nondeterministic", "leakage", "reward-hack", "provenance-gap", "license-gap", "other"] },
+    "statement": { "type": "string", "minLength": 20, "maxLength": 1000 },
+    "severity": { "enum": ["low", "medium", "high", "critical"] },
+    "status": { "enum": ["proposed", "confirmed", "rejected", "resolved", "superseded"] },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "url"],
+        "properties": {
+          "kind": { "enum": ["trajectory", "source", "reproduction", "upstream", "discussion"] },
+          "url": { "type": "string", "format": "uri" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "note": { "type": "string", "maxLength": 500 }
+        }
+      }
+    },
+    "reporter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["github"],
+      "properties": { "github": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$" } }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reviewers", "decided_at", "rationale"],
+      "properties": {
+        "decision": { "enum": ["confirmed", "rejected", "resolved", "superseded"] },
+        "reviewers": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "decided_at": { "type": "string", "format": "date-time" },
+        "rationale": { "type": "string", "minLength": 20, "maxLength": 1000 }
+      }
+    },
+    "repair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contributor", "upstream_url", "revision", "validation"],
+      "properties": {
+        "contributor": { "$ref": "#/$defs/githubIdentity" },
+        "upstream_url": { "type": "string", "format": "uri" },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "validation": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "url", "sha256"],
+            "properties": {
+              "kind": { "enum": ["reproduction", "source"] },
+              "url": { "type": "string", "format": "uri" },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "note": { "type": "string", "maxLength": 500 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "githubIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["github"],
+      "properties": { "github": { "type": "string" } }
+    }
+  }
+}

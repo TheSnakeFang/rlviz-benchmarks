@@ -9,6 +9,9 @@ test("shows exact source and redistribution state without inventing results", as
   await expect(page.getByRole("heading", { name: "SWE-bench Verified" })).toBeVisible();
   await expect(page.getByText("audit priority", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "upstream" }).first()).toHaveAttribute("href", /^https:\/\//);
+  await expect(page.getByRole("heading", { name: "Claims & repairs" })).toBeVisible();
+  await expect(page.getByText("0", { exact: true })).toHaveCount(3);
+  await expect(page.getByRole("link", { name: "file an evidence claim" })).toHaveAttribute("href", /claim\.yml/);
 });
 
 test("filters records and remains readable at mobile width", async ({ page }) => {

@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+contact_links:
+  - name: RLViz viewer bugs
+    url: https://github.com/TheSnakeFang/rlviz/issues/new
+    about: Report viewer and import bugs in the core repository.
+

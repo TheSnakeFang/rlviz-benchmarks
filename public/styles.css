@@ -48,6 +48,14 @@ input { width: min(320px, 70vw); padding: 10px 11px; border: 1px solid var(--lin
 .blocked { color: var(--accent); }
 .trajectory-empty { color: var(--muted); }
 .trajectory-link { display: inline-block; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--ink); text-decoration: none; font-weight: 700; }
+.claims { display: grid; grid-template-columns: .8fr 1.4fr .65fr; gap: 26px; padding: 52px 0; border-top: 1px solid var(--ink); }
+.claims > p { max-width: 620px; margin: 0; font-size: 17px; line-height: 1.5; }
+.claim-metrics { display: grid; grid-template-columns: repeat(3, 1fr); grid-column: 2 / 4; border-block: 1px solid var(--line); }
+.claim-metrics div { padding: 16px 10px 16px 0; }
+.claim-metrics b, .claim-metrics span { display: block; }
+.claim-metrics b { font-size: 28px; }
+.claim-metrics span { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+.claim-action { justify-self: start; padding: 10px 12px; border: 1px solid var(--ink); text-decoration: none; font-weight: 750; }
 .boundary { display: grid; grid-template-columns: 180px 1fr; gap: 24px; margin-bottom: 70px; padding: 24px 0; border-block: 1px solid var(--ink); }
 .boundary p { max-width: 760px; margin: 0; line-height: 1.5; }
 footer { min-height: 64px; padding: 18px clamp(18px, 4vw, 64px); display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
@@ -60,6 +68,8 @@ footer { min-height: 64px; padding: 18px clamp(18px, 4vw, 64px); display: flex; 
   .catalog > header { align-items: stretch; flex-direction: column; }
   input { width: 100%; }
   .benchmark { grid-template-columns: 1fr; gap: 18px; }
+  .claims { grid-template-columns: 1fr; }
+  .claim-metrics { grid-column: auto; }
   .boundary { grid-template-columns: 1fr; }
   footer { flex-direction: column; }
 }
@@ -67,4 +77,3 @@ footer { min-height: 64px; padding: 18px clamp(18px, 4vw, 64px); display: flex; 
   :root { color-scheme: dark; --paper: #11110f; --surface: #191916; --ink: #f3f1e9; --muted: #aaa79e; --line: #393831; --accent: #ff7255; --safe: #72c69a; }
   body { background: radial-gradient(circle at 80% 0, #27251f 0, transparent 28rem), var(--paper); }
 }
-

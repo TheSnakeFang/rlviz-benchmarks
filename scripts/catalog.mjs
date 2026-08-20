@@ -6,6 +6,10 @@ const sha64 = /^[0-9a-f]{64}$/;
 const slug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const allowedStates = new Set(["source-pinned", "audit-priority", "showcased", "deprecated"]);
 const reviewStates = new Set(["not-reviewed", "audit-priority", "reviewed"]);
+const claimTypes = new Set(["broken", "ambiguous", "unsolvable", "optional-field-mismatch", "nondeterministic", "leakage", "reward-hack", "provenance-gap", "license-gap", "other"]);
+const claimStatuses = new Set(["proposed", "confirmed", "rejected", "resolved", "superseded"]);
+const claimComponents = new Set(["prompt", "environment", "verifier", "seed", "metadata", "solvability", "licensing", "trajectory"]);
+const evidenceKinds = new Set(["trajectory", "source", "reproduction", "upstream", "discussion"]);
 
 function publicHTTPS(raw, label, { bundle = false } = {}) {
   let url;
@@ -74,3 +78,79 @@ export async function loadCatalog(root) {
   return records;
 }
 
+export function validateClaim(claim, benchmarks) {
+  exactKeys(claim, ["schema_version", "id", "subject", "claim_type", "statement", "severity", "status", "evidence", "reporter", "created_at", "review", "repair"], "claim");
+  if (claim.schema_version !== "rlviz.dev/benchmark-claim/v1" || !/^claim-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(claim.id)) throw new Error("claim has invalid identity");
+  exactKeys(claim.subject, ["benchmark_slug", "benchmark_revision", "task_id", "component"], `${claim.id}.subject`);
+  const benchmark = benchmarks.find((record) => record.slug === claim.subject.benchmark_slug);
+  if (!benchmark) throw new Error(`${claim.id} references an unknown benchmark`);
+  if (benchmark.upstream.revision !== claim.subject.benchmark_revision) throw new Error(`${claim.id} does not match the cataloged benchmark revision`);
+  if (!claim.subject.task_id || !claimComponents.has(claim.subject.component)) throw new Error(`${claim.id} has an incomplete subject`);
+  if (!claimTypes.has(claim.claim_type) || !claimStatuses.has(claim.status)) throw new Error(`${claim.id} has an invalid type or status`);
+  if (!new Set(["low", "medium", "high", "critical"]).has(claim.severity) || typeof claim.statement !== "string" || claim.statement.length < 20) throw new Error(`${claim.id} has an incomplete statement`);
+  if (!Array.isArray(claim.evidence) || !claim.evidence.length) throw new Error(`${claim.id} requires evidence`);
+  for (const evidence of claim.evidence) {
+    exactKeys(evidence, ["kind", "url", "sha256", "note"], `${claim.id}.evidence`);
+    if (!evidenceKinds.has(evidence.kind)) throw new Error(`${claim.id} has an invalid evidence kind`);
+    publicHTTPS(evidence.url, `${claim.id} evidence URL`);
+    if (evidence.sha256 !== undefined && !sha64.test(evidence.sha256)) throw new Error(`${claim.id} evidence digest is invalid`);
+    if (["trajectory", "reproduction"].includes(evidence.kind) && !sha64.test(evidence.sha256 ?? "")) throw new Error(`${claim.id} ${evidence.kind} evidence requires a SHA-256`);
+  }
+  exactKeys(claim.reporter, ["github"], `${claim.id}.reporter`);
+  if (!githubHandle(claim.reporter.github) || !validDateTime(claim.created_at)) throw new Error(`${claim.id} has invalid reporter provenance`);
+  if (claim.status === "proposed" && claim.review !== undefined) throw new Error(`${claim.id} cannot have a review while proposed`);
+  if (claim.status !== "proposed") {
+    if (claim.review === undefined) throw new Error(`${claim.id} requires review provenance`);
+    exactKeys(claim.review, ["decision", "reviewers", "decided_at", "rationale"], `${claim.id}.review`);
+    if (claim.review.decision !== claim.status || !Array.isArray(claim.review.reviewers) || !claim.review.reviewers.length || !claim.review.reviewers.every(githubHandle) || !validDateTime(claim.review.decided_at) || typeof claim.review.rationale !== "string" || claim.review.rationale.length < 20) throw new Error(`${claim.id} has invalid review provenance`);
+  }
+  if (claim.status === "resolved" && claim.repair === undefined) throw new Error(`${claim.id} resolved claims require a repair`);
+  if (claim.status !== "resolved" && claim.repair !== undefined) throw new Error(`${claim.id} can attach a repair only when resolved`);
+  if (claim.repair !== undefined) {
+    exactKeys(claim.repair, ["contributor", "upstream_url", "revision", "validation"], `${claim.id}.repair`);
+    exactKeys(claim.repair.contributor, ["github"], `${claim.id}.repair.contributor`);
+    if (!githubHandle(claim.repair.contributor.github) || !sha40.test(claim.repair.revision) || !Array.isArray(claim.repair.validation) || !claim.repair.validation.length) throw new Error(`${claim.id} has incomplete repair provenance`);
+    publicHTTPS(claim.repair.upstream_url, `${claim.id} repair URL`);
+    for (const validation of claim.repair.validation) {
+      exactKeys(validation, ["kind", "url", "sha256", "note"], `${claim.id}.repair.validation`);
+      if (!new Set(["reproduction", "source"]).has(validation.kind) || !sha64.test(validation.sha256 ?? "")) throw new Error(`${claim.id} repair validation requires a source or reproduction digest`);
+      publicHTTPS(validation.url, `${claim.id} repair validation URL`);
+    }
+  }
+  return claim;
+}
+
+export async function loadClaims(root, benchmarks) {
+  const directory = path.join(root, "catalog", "claims");
+  const files = (await readdir(directory)).filter((name) => name.endsWith(".json")).sort();
+  const claims = [];
+  for (const file of files) claims.push(validateClaim(JSON.parse(await readFile(path.join(directory, file), "utf8")), benchmarks));
+  const ids = claims.map((claim) => claim.id);
+  if (new Set(ids).size !== ids.length) throw new Error("claim IDs must be unique");
+  return claims;
+}
+
+export function contributorReputation(claims) {
+  const contributors = new Map();
+  const add = (github, points, contribution) => {
+    const current = contributors.get(github) ?? { github, points: 0, contributions: 0, confirmed_claims: 0, repairs: 0 };
+    current.points += points; current.contributions += contribution === "claim" ? 1 : 0;
+    current.confirmed_claims += contribution === "confirmed" ? 1 : 0;
+    current.repairs += contribution === "repair" ? 1 : 0;
+    contributors.set(github, current);
+  };
+  for (const claim of claims) {
+    add(claim.reporter.github, 1, "claim");
+    if (["confirmed", "resolved"].includes(claim.status)) add(claim.reporter.github, 4, "confirmed");
+    if (claim.status === "resolved" && claim.repair) add(claim.repair.contributor.github, 5, "repair");
+  }
+  return [...contributors.values()].sort((left, right) => right.points - left.points || left.github.localeCompare(right.github));
+}
+
+function githubHandle(value) {
+  return typeof value === "string" && /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/.test(value);
+}
+
+function validDateTime(value) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(value) && !Number.isNaN(Date.parse(value));
+}

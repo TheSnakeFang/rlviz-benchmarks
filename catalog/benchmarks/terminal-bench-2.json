@@ -2,8 +2,8 @@
   "schema_version": "rlviz.dev/benchmark-catalog/v1",
   "slug": "terminal-bench-2",
   "name": "Terminal-Bench 2.0",
-  "catalog_state": "source-pinned",
-  "summary": "Official terminal-agent benchmark source pinned for provenance. No tasks or trajectories are republished yet.",
+  "catalog_state": "showcased",
+  "summary": "Official terminal-agent benchmark source with one reviewed failure trajectory published as a digest-pinned RLViz bundle.",
   "upstream": {
     "kind": "github",
     "url": "https://github.com/harbor-framework/terminal-bench-2",
@@ -22,8 +22,28 @@
     "note": "A source pin is not a quality endorsement. Task, environment, verifier, and solvability review has not been performed here."
   },
   "references": [
-    { "label": "Harbor harness", "url": "https://github.com/harbor-framework/harbor" }
+    { "label": "Harbor harness", "url": "https://github.com/harbor-framework/harbor" },
+    { "label": "Trajectory dataset", "url": "https://huggingface.co/datasets/yoonholee/terminalbench-trajectories/tree/04e8940f5b6736a7ce8d22224fe2f2af74163ed2" },
+    { "label": "Trajectory license", "url": "https://huggingface.co/datasets/yoonholee/terminalbench-trajectories/blob/04e8940f5b6736a7ce8d22224fe2f2af74163ed2/README.md" }
   ],
   "external_runs": [],
-  "trajectories": []
+  "trajectories": [
+    {
+      "id": "adaptive-rejection-sampler-mini-swe-agent-gpt-oss-120b",
+      "task_id": "adaptive-rejection-sampler",
+      "bundle_url": "https://raw.githubusercontent.com/TheSnakeFang/rlviz-benchmarks/main/public/bundles/terminal-bench-2-adaptive-rejection-sampler-mini-swe-agent.rlviz",
+      "sha256": "3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1",
+      "license": "Apache-2.0",
+      "reviewed": true,
+      "redaction_confirmed": true,
+      "provenance": {
+        "agent": "mini-swe-agent; version unavailable in source",
+        "model": "openai/gpt-oss-120b@together_ai",
+        "harness": "yoonholee/terminalbench-trajectories@04e8940f5b6736a7ce8d22224fe2f2af74163ed2 row 242",
+        "environment": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
+        "verifier": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
+        "run": "trial 882393f2-4c26-43c1-8865-b45508c948db"
+      }
+    }
+  ]
 }

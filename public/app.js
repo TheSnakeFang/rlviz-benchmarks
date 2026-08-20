@@ -28,7 +28,7 @@ function render() {
   const visible = benchmarks.filter((record) => JSON.stringify([record.name, record.slug, record.catalog_state, record.upstream.revision]).toLowerCase().includes(query));
   const trajectories = visible.reduce((sum, record) => sum + record.trajectories.length, 0);
   const externalRuns = visible.reduce((sum, record) => sum + (record.external_runs?.length ?? 0), 0);
-  status.textContent = `${visible.length} of ${benchmarks.length} pinned benchmark records · ${trajectories} published trajectories · ${externalRuns} external ${externalRuns === 1 ? "run" : "runs"}`;
+  status.textContent = `${visible.length} of ${benchmarks.length} pinned benchmark records · ${trajectories} published ${trajectories === 1 ? "trajectory" : "trajectories"} · ${externalRuns} external ${externalRuns === 1 ? "run" : "runs"}`;
   list.replaceChildren(...visible.map(benchmarkCard));
 }
 

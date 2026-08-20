@@ -13,6 +13,7 @@ test("shows exact source and redistribution state without inventing results", as
   await expect(page.getByText("0", { exact: true })).toHaveCount(3);
   await expect(page.getByRole("link", { name: "file an evidence claim" })).toHaveAttribute("href", /claim\.yml/);
   await expect(page.getByRole("link", { name: "view pinned submission" })).toHaveAttribute("href", /github\.com\/harbor-framework\/harbor-index\/blob\/35f01ec/);
+  await expect(page.getByText(/job 5fab3f7b/)).toBeVisible();
   await expect(page.getByText("source-reported · source record only")).toBeVisible();
 });
 

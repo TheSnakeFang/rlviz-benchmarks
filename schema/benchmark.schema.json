@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benchmarks.rlviz.dev/schema/benchmark-v1.json",
+  "title": "RLViz benchmark catalog record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "slug", "name", "catalog_state", "summary", "upstream", "license", "quality", "trajectories"],
+  "properties": {
+    "schema_version": { "const": "rlviz.dev/benchmark-catalog/v1" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "catalog_state": { "enum": ["source-pinned", "audit-priority", "showcased", "deprecated"] },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 400 },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "url", "revision", "version", "retrieved_at"],
+      "properties": {
+        "kind": { "enum": ["github", "huggingface", "harbor"] },
+        "url": { "type": "string", "format": "uri" },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "retrieved_at": { "type": "string", "format": "date" }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "redistribution", "evidence_url"],
+      "properties": {
+        "status": { "enum": ["verified", "unverified"] },
+        "spdx": { "type": "string" },
+        "redistribution": { "enum": ["allowed", "blocked"] },
+        "evidence_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_state", "note"],
+      "properties": {
+        "review_state": { "enum": ["not-reviewed", "audit-priority", "reviewed"] },
+        "note": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "url"],
+        "properties": { "label": { "type": "string" }, "url": { "type": "string", "format": "uri" } }
+      }
+    },
+    "trajectories": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/trajectory" }
+    }
+  },
+  "$defs": {
+    "trajectory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "task_id", "bundle_url", "sha256", "license", "reviewed", "redaction_confirmed", "provenance"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9._-]+$" },
+        "task_id": { "type": "string", "minLength": 1 },
+        "bundle_url": { "type": "string", "format": "uri" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "license": { "type": "string", "minLength": 1 },
+        "reviewed": { "const": true },
+        "redaction_confirmed": { "const": true },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["agent", "model", "harness", "environment", "verifier", "run"],
+          "properties": {
+            "agent": { "type": "string", "minLength": 1 },
+            "model": { "type": "string", "minLength": 1 },
+            "harness": { "type": "string", "minLength": 1 },
+            "environment": { "type": "string", "minLength": 1 },
+            "verifier": { "type": "string", "minLength": 1 },
+            "run": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}
+

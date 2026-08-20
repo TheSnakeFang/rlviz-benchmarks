@@ -1,0 +1,27 @@
+{
+  "schema_version": "rlviz.dev/benchmark-catalog/v1",
+  "slug": "harbor-index-1-4",
+  "name": "Harbor-Index 1.4",
+  "catalog_state": "source-pinned",
+  "summary": "Harbor-Index release pin. Metadata is cataloged, but content redistribution is blocked pending explicit license evidence.",
+  "upstream": {
+    "kind": "github",
+    "url": "https://github.com/harbor-framework/harbor-index",
+    "revision": "35f01ec42b14c2b5da476099f5b0d209240bca5b",
+    "version": "harbor-index-1.4",
+    "retrieved_at": "2026-08-20"
+  },
+  "license": {
+    "status": "unverified",
+    "redistribution": "blocked",
+    "evidence_url": "https://github.com/harbor-framework/harbor-index/tree/harbor-index-1.4"
+  },
+  "quality": {
+    "review_state": "not-reviewed",
+    "note": "Upstream describes a human-audited selection process; this catalog has not independently reproduced or endorsed those audits."
+  },
+  "references": [
+    { "label": "Release tag", "url": "https://github.com/harbor-framework/harbor-index/tree/harbor-index-1.4" }
+  ],
+  "trajectories": []
+}

@@ -26,7 +26,9 @@ filter.addEventListener("input", render);
 function render() {
   const query = filter.value.trim().toLowerCase();
   const visible = benchmarks.filter((record) => JSON.stringify([record.name, record.slug, record.catalog_state, record.upstream.revision]).toLowerCase().includes(query));
-  status.textContent = `${visible.length} of ${benchmarks.length} pinned benchmark records · ${visible.reduce((sum, record) => sum + record.trajectories.length, 0)} published trajectories`;
+  const trajectories = visible.reduce((sum, record) => sum + record.trajectories.length, 0);
+  const externalRuns = visible.reduce((sum, record) => sum + (record.external_runs?.length ?? 0), 0);
+  status.textContent = `${visible.length} of ${benchmarks.length} pinned benchmark records · ${trajectories} published trajectories · ${externalRuns} external ${externalRuns === 1 ? "run" : "runs"}`;
   list.replaceChildren(...visible.map(benchmarkCard));
 }
 
@@ -43,11 +45,19 @@ function benchmarkCard(record) {
   factLink(details, "license", record.license.evidence_url, record.license.spdx ?? "unverified", record.license.redistribution);
   fact(details, "content", record.license.redistribution === "allowed" ? "redistribution allowed" : "redistribution blocked", record.license.redistribution);
   const trajectory = record.trajectories[0];
+  const externalRun = record.external_runs?.[0];
   if (trajectory) {
     const href = `https://rlviz.dev/?${new URLSearchParams({ bundle: trajectory.bundle_url, sha256: trajectory.sha256 })}`;
     const dt = element("dt", "", "run"); const dd = element("dd");
     const link = element("a", "trajectory-link", "inspect trajectory"); link.href = href; link.rel = "noreferrer";
     dd.append(link); details.append(dt, dd);
+  } else if (externalRun) {
+    const dt = element("dt", "", "run"); const dd = element("dd", "external-run");
+    const link = element("a", "trajectory-link", externalRun.job_url ? "inspect in Harbor Hub" : "view pinned submission"); link.href = externalRun.job_url ?? externalRun.source_record_url; link.rel = "noreferrer";
+    const provenance = element("span", "run-provenance", `${externalRun.model.name} · ${externalRun.agent.name} ${externalRun.agent.version} · ${externalRun.trials.toLocaleString()} trials`);
+    const metrics = element("span", "run-metrics", `${externalRun.metrics.accuracy_percent}% ± ${externalRun.metrics.accuracy_stderr_percent}% accuracy · ${externalRun.metrics.total_tokens.toLocaleString()} tokens · $${externalRun.metrics.total_cost_usd.toLocaleString(undefined, { minimumFractionDigits: 2 })}`);
+    const boundary = element("span", "run-boundary", `source-reported · ${externalRun.availability.state.replaceAll("-", " ")}`);
+    dd.append(link, provenance, metrics, boundary); details.append(dt, dd);
   } else fact(details, "runs", "none published", "trajectory-empty");
   article.append(identity, narrative, details);
   return article;

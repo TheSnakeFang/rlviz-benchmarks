@@ -10,6 +10,8 @@ test("all catalog records have immutable, publication-safe provenance", async ()
   const records = await loadCatalog(root);
   assert.deepEqual(records.map((record) => record.slug), ["harbor-index-1-4", "swe-bench-verified", "swe-rebench-v2", "terminal-bench-2"]);
   assert.equal(records.flatMap((record) => record.trajectories).length, 0);
+  assert.equal(records.flatMap((record) => record.external_runs).length, 1);
+  assert.equal(records.find((record) => record.slug === "harbor-index-1-4").external_runs[0].availability.state, "source-record-only");
   assert.equal(records.filter((record) => record.license.redistribution === "blocked").length, 2);
   assert.deepEqual(await loadClaims(root, records), []);
 });
@@ -53,6 +55,23 @@ test("trajectory handoffs require queryless HTTPS and a complete digest", () => 
   assert.throws(() => validateBenchmark(record), /full bundle SHA-256/);
 });
 
+test("external Harbor runs stay pinned, direct, and separate from trajectories", () => {
+  const record = fixture();
+  record.external_runs = [externalRun(record.upstream.revision)];
+  assert.equal(validateBenchmark(record).external_runs[0].provider, "harbor");
+  record.external_runs[0].job_url = "https://hub.harborframework.com/jobs/5fab3f7b-0e44-4924-bbed-026e8387ef84?download=1";
+  record.external_runs[0].availability.state = "public-job";
+  assert.throws(() => validateBenchmark(record), /direct, queryless Harbor Hub job URL/);
+  record.external_runs = [externalRun("f".repeat(40))];
+  assert.throws(() => validateBenchmark(record), /cataloged revision/);
+});
+
+test("v1 records without external runs remain valid", () => {
+  const record = fixture();
+  delete record.external_runs;
+  assert.equal(validateBenchmark(record).slug, "fixture");
+});
+
 function fixture() {
   return {
     schema_version: "rlviz.dev/benchmark-catalog/v1",
@@ -63,7 +82,25 @@ function fixture() {
     upstream: { kind: "github", url: "https://example.com/source", revision: "a".repeat(40), version: "v1", retrieved_at: "2026-08-20" },
     license: { status: "verified", spdx: "MIT", redistribution: "allowed", evidence_url: "https://example.com/license" },
     quality: { review_state: "reviewed", note: "Reviewed fixture." },
+    external_runs: [],
     trajectories: []
+  };
+}
+
+function externalRun(revision) {
+  return {
+    id: "external-run-1",
+    provider: "harbor",
+    job_id: "5fab3f7b-0e44-4924-bbed-026e8387ef84",
+    job_url: "https://hub.harborframework.com/jobs/5fab3f7b-0e44-4924-bbed-026e8387ef84",
+    source_record_url: `https://example.com/source/blob/${revision}/submission.json`,
+    source_record_revision: revision,
+    date: "2026-08-20",
+    agent: { name: "agent", version: "1.0.0" },
+    model: { name: "model", reasoning_effort: "high" },
+    trials: 10,
+    metrics: { accuracy_percent: 50, accuracy_stderr_percent: 2, total_tokens: 1000, total_cost_usd: 1.25 },
+    availability: { state: "public-job", checked_at: "2026-08-20", reason: "The source host controls access and redistribution rights." }
   };
 }
 

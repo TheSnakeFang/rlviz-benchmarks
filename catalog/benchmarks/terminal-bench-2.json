@@ -24,6 +24,6 @@
   "references": [
     { "label": "Harbor harness", "url": "https://github.com/harbor-framework/harbor" }
   ],
+  "external_runs": [],
   "trajectories": []
 }
-

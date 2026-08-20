@@ -7,7 +7,10 @@ the local-first reader through an explicit, SHA-256-pinned link.
 
 The current catalog is intentionally metadata-only. It does not mirror tasks,
 claim that a benchmark is sound, publish a new aggregate ranking, or copy
-trajectories whose redistribution rights have not been verified.
+trajectories whose redistribution rights have not been verified. Harbor-backed
+runs remain external records: this catalog pins the source submission and
+reports whether its Harbor Hub job is still publicly reachable without
+republishing either one's contents.
 
 ## Develop
 
@@ -21,6 +24,14 @@ Catalog records live in `catalog/benchmarks`. Every record pins a primary
 source revision and declares whether its license evidence permits
 redistribution. `npm test` rejects mutable refs, incomplete provenance, unsafe
 bundle URLs, and invalid digests.
+
+`external_runs` is a separate boundary for source-hosted evidence. A Harbor run
+must use an immutable source record at the same revision as its benchmark
+entry. A live `job_url` is optional, but when present it must be a direct Harbor
+Hub job URL and the availability state must be `public-job`. Availability is
+date-stamped; missing or removed jobs stay visibly `source-record-only`.
+Metrics are labeled source-reported;
+external runs never count as published RLViz trajectories.
 
 Defect claims live in `catalog/claims`. Claims bind one exact task and component
 to the benchmark revision already in the catalog. Non-proposed claims require a

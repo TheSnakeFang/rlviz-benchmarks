@@ -48,6 +48,10 @@ input { width: min(320px, 70vw); padding: 10px 11px; border: 1px solid var(--lin
 .blocked { color: var(--accent); }
 .trajectory-empty { color: var(--muted); }
 .trajectory-link { display: inline-block; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--ink); text-decoration: none; font-weight: 700; }
+.external-run { display: grid; gap: 6px; }
+.external-run .trajectory-link { justify-self: start; margin-top: 0; }
+.run-provenance, .run-metrics, .run-boundary { color: var(--muted); font-size: 11px; line-height: 1.4; }
+.run-boundary { color: var(--accent); font-family: ui-monospace, monospace; text-transform: uppercase; }
 .claims { display: grid; grid-template-columns: .8fr 1.4fr .65fr; gap: 26px; padding: 52px 0; border-top: 1px solid var(--ink); }
 .claims > p { max-width: 620px; margin: 0; font-size: 17px; line-height: 1.5; }
 .claim-metrics { display: grid; grid-template-columns: repeat(3, 1fr); grid-column: 2 / 4; border-block: 1px solid var(--line); }

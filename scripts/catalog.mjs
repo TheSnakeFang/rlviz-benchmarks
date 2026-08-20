@@ -25,7 +25,7 @@ function exactKeys(value, keys, label) {
 }
 
 export function validateBenchmark(record) {
-  exactKeys(record, ["schema_version", "slug", "name", "catalog_state", "summary", "upstream", "license", "quality", "references", "trajectories"], "record");
+  exactKeys(record, ["schema_version", "slug", "name", "catalog_state", "summary", "upstream", "license", "quality", "references", "external_runs", "trajectories"], "record");
   if (record.schema_version !== "rlviz.dev/benchmark-catalog/v1") throw new Error("unsupported schema_version");
   if (!slug.test(record.slug)) throw new Error("slug is invalid");
   if (!record.name || !record.summary) throw new Error(`${record.slug} requires name and summary`);
@@ -52,6 +52,33 @@ export function validateBenchmark(record) {
     publicHTTPS(reference.url, `${record.slug} reference URL`);
   }
 
+  if (record.external_runs !== undefined && !Array.isArray(record.external_runs)) throw new Error(`${record.slug}.external_runs must be an array`);
+  const externalRunIds = new Set();
+  for (const run of record.external_runs ?? []) {
+    exactKeys(run, ["id", "provider", "job_id", "job_url", "source_record_url", "source_record_revision", "date", "agent", "model", "trials", "metrics", "availability"], `${record.slug}.external_run`);
+    if (!/^[a-zA-Z0-9._-]+$/.test(run.id) || externalRunIds.has(run.id)) throw new Error(`${record.slug} has an invalid or duplicate external run id`);
+    externalRunIds.add(run.id);
+    if (run.provider !== "harbor") throw new Error(`${record.slug}/${run.id} has an unsupported external run provider`);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(run.job_id)) throw new Error(`${record.slug}/${run.id} has an invalid Harbor job ID`);
+    if (run.job_url !== undefined) {
+      validateHarborJobURL(run.job_url, `${record.slug}/${run.id} Harbor job URL`);
+      if (!run.job_url.endsWith(`/${run.job_id}`)) throw new Error(`${record.slug}/${run.id} Harbor job URL does not match its job ID`);
+    }
+    publicHTTPS(run.source_record_url, `${record.slug}/${run.id} source record URL`);
+    if (!sha40.test(run.source_record_revision) || run.source_record_revision !== record.upstream.revision || !run.source_record_url.includes(run.source_record_revision)) throw new Error(`${record.slug}/${run.id} must pin its source record to the cataloged revision`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(run.date)) throw new Error(`${record.slug}/${run.id} has an invalid date`);
+    exactKeys(run.agent, ["name", "version"], `${record.slug}/${run.id}.agent`);
+    exactKeys(run.model, ["name", "reasoning_effort"], `${record.slug}/${run.id}.model`);
+    if (!run.agent.name || !run.agent.version || !run.model.name || !run.model.reasoning_effort) throw new Error(`${record.slug}/${run.id} has incomplete execution provenance`);
+    if (!Number.isInteger(run.trials) || run.trials < 1) throw new Error(`${record.slug}/${run.id} has an invalid trial count`);
+    exactKeys(run.metrics, ["accuracy_percent", "accuracy_stderr_percent", "total_tokens", "total_cost_usd"], `${record.slug}/${run.id}.metrics`);
+    for (const field of ["accuracy_percent", "accuracy_stderr_percent", "total_tokens", "total_cost_usd"]) if (!Number.isFinite(run.metrics[field]) || run.metrics[field] < 0) throw new Error(`${record.slug}/${run.id} has invalid source-reported metrics`);
+    if (run.metrics.accuracy_percent > 100 || !Number.isInteger(run.metrics.total_tokens)) throw new Error(`${record.slug}/${run.id} has invalid source-reported metrics`);
+    exactKeys(run.availability, ["state", "checked_at", "reason"], `${record.slug}/${run.id}.availability`);
+    if (!new Set(["public-job", "source-record-only"]).has(run.availability.state) || !/^\d{4}-\d{2}-\d{2}$/.test(run.availability.checked_at) || typeof run.availability.reason !== "string" || run.availability.reason.length < 20) throw new Error(`${record.slug}/${run.id} must declare its checked external availability`);
+    if ((run.availability.state === "public-job") !== (run.job_url !== undefined)) throw new Error(`${record.slug}/${run.id} public-job availability must match a direct Harbor job URL`);
+  }
+
   if (!Array.isArray(record.trajectories)) throw new Error(`${record.slug}.trajectories must be an array`);
   if (record.trajectories.length && record.license.redistribution !== "allowed") throw new Error(`${record.slug} cannot publish trajectories while benchmark redistribution is blocked`);
   const ids = new Set();
@@ -66,6 +93,12 @@ export function validateBenchmark(record) {
     for (const field of ["agent", "model", "harness", "environment", "verifier", "run"]) if (!trajectory.provenance[field]) throw new Error(`${record.slug}/${trajectory.id} lacks ${field} provenance`);
   }
   return record;
+}
+
+function validateHarborJobURL(raw, label) {
+  publicHTTPS(raw, label);
+  const url = new URL(raw);
+  if (url.origin !== "https://hub.harborframework.com" || !/^\/jobs\/[0-9a-f-]{36}$/.test(url.pathname) || url.search || url.hash) throw new Error(`${label} must be a direct, queryless Harbor Hub job URL`);
 }
 
 export async function loadCatalog(root) {

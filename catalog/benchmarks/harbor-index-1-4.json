@@ -23,5 +23,24 @@
   "references": [
     { "label": "Release tag", "url": "https://github.com/harbor-framework/harbor-index/tree/harbor-index-1.4" }
   ],
+  "external_runs": [
+    {
+      "id": "gpt-5-6-terra-codex-max",
+      "provider": "harbor",
+      "job_id": "5fab3f7b-0e44-4924-bbed-026e8387ef84",
+      "source_record_url": "https://github.com/harbor-framework/harbor-index/blob/35f01ec42b14c2b5da476099f5b0d209240bca5b/leaderboard/submissions/2026-07-14-gpt-5-6-terra-max-codex.json",
+      "source_record_revision": "35f01ec42b14c2b5da476099f5b0d209240bca5b",
+      "date": "2026-07-14",
+      "agent": { "name": "codex", "version": "0.144.3" },
+      "model": { "name": "gpt-5.6-terra", "reasoning_effort": "max" },
+      "trials": 400,
+      "metrics": { "accuracy_percent": 35, "accuracy_stderr_percent": 1.59, "total_tokens": 1710752293, "total_cost_usd": 688.95 },
+      "availability": {
+        "state": "source-record-only",
+        "checked_at": "2026-08-20",
+        "reason": "The submission's declared source job is no longer publicly reachable. Its pinned source record remains available."
+      }
+    }
+  ],
   "trajectories": []
 }

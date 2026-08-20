@@ -23,6 +23,6 @@
   "references": [
     { "label": "Evaluation code", "url": "https://github.com/SWE-bench/SWE-bench" }
   ],
+  "external_runs": [],
   "trajectories": []
 }
-

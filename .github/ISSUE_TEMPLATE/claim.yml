@@ -1,0 +1,59 @@
+name: Benchmark defect claim
+description: Submit an evidence-backed claim about a pinned benchmark task.
+title: "claim: "
+labels: ["claim: proposed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets or private trajectories. A failed run alone does not establish a benchmark defect.
+  - type: input
+    id: benchmark
+    attributes:
+      label: Benchmark slug and revision
+      description: Use the catalog slug and complete 40-character revision.
+      placeholder: swe-bench-verified @ c104f840cc67f8b6eec6f759ebc8b2693d585d4a
+    validations:
+      required: true
+  - type: input
+    id: task
+    attributes:
+      label: Exact task ID
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected component
+      options: [prompt, environment, verifier, seed, metadata, solvability, licensing, trajectory]
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Claim type
+      options: [broken, ambiguous, unsolvable, optional-field-mismatch, nondeterministic, leakage, reward-hack, provenance-gap, license-gap, other]
+    validations:
+      required: true
+  - type: textarea
+    id: statement
+    attributes:
+      label: Falsifiable claim
+      description: State what is wrong, what should happen, and the smallest observation that would disprove this claim.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Durable evidence
+      description: Link exact source lines, immutable reproductions, public trajectories, verifier output, or upstream discussion. Include digests when available.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Publication check
+      options:
+        - label: I verified that these links contain no secrets or private data and may be shared publicly.
+          required: true
+

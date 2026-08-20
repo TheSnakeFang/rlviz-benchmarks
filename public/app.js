@@ -9,9 +9,16 @@ try {
   const catalog = await response.json();
   if (catalog.schema_version !== "rlviz.dev/benchmark-catalog-index/v1" || !Array.isArray(catalog.benchmarks)) throw new Error("Catalog response is invalid");
   benchmarks = catalog.benchmarks;
+  renderClaims(catalog.claims ?? [], catalog.contributors ?? []);
   render();
 } catch (error) {
   status.textContent = error instanceof Error ? error.message : "Could not load catalog";
+}
+
+function renderClaims(claims, contributors) {
+  document.querySelector("#claim-count").textContent = String(claims.length);
+  document.querySelector("#resolved-count").textContent = String(claims.filter((claim) => claim.status === "resolved").length);
+  document.querySelector("#contributor-count").textContent = String(contributors.length);
 }
 
 filter.addEventListener("input", render);
@@ -61,4 +68,3 @@ function element(tag, className = "", text = "") {
   if (text) node.textContent = text;
   return node;
 }
-

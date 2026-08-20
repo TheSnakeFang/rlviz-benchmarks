@@ -5,9 +5,10 @@ The catalog complements [RLViz](https://github.com/TheSnakeFang/rlviz): it
 tracks immutable source revisions and hands reviewed public `.rlviz` bundles to
 the local-first reader through an explicit, SHA-256-pinned link.
 
-The current catalog is intentionally metadata-only. It does not mirror tasks,
-claim that a benchmark is sound, publish a new aggregate ranking, or copy
-trajectories whose redistribution rights have not been verified. Harbor-backed
+The catalog does not mirror whole task sets, claim that a benchmark is sound,
+or publish a new aggregate ranking. It includes one deliberately small,
+reviewed Terminal-Bench failure showcase; trajectories whose redistribution
+rights or provenance have not been verified remain unpublished. Harbor-backed
 runs remain external records: this catalog pins the source submission and
 reports whether its Harbor Hub job is still publicly reachable without
 republishing either one's contents.
@@ -55,3 +56,19 @@ A trajectory can appear only when its record includes:
 Authentication, claims, repairs, reputation, and maintainer tools are later
 write surfaces. Reading the catalog and opening RLViz never requires an
 account.
+
+## Reproduce the first Terminal-Bench import
+
+The showcase importer refuses to run if the public trajectory dataset has
+moved from its cataloged Hugging Face revision. It then requests one exact row
+and emits canonical RLViz NDJSON without filling missing source facts:
+
+```bash
+node scripts/import-terminalbench-showcase.mjs /tmp/terminalbench.ndjson
+rlviz bundle create /tmp/terminalbench.ndjson --out reviewed.rlviz \
+  --title "Terminal-Bench 2.0 · adaptive-rejection-sampler" \
+  --license Apache-2.0 --reviewed --redaction-confirmed
+```
+
+The affirmative review flags belong only after inspecting the complete emitted
+trace. The importer does not make those judgments.

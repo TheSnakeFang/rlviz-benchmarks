@@ -1,19 +1,31 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { contributorReputation, loadCatalog, loadClaims, validateBenchmark, validateClaim } from "../scripts/catalog.mjs";
+import { convertTerminalBenchRow, source as terminalBenchSource } from "../scripts/import-terminalbench-showcase.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("all catalog records have immutable, publication-safe provenance", async () => {
   const records = await loadCatalog(root);
   assert.deepEqual(records.map((record) => record.slug), ["harbor-index-1-4", "swe-bench-verified", "swe-rebench-v2", "terminal-bench-2"]);
-  assert.equal(records.flatMap((record) => record.trajectories).length, 0);
+  assert.equal(records.flatMap((record) => record.trajectories).length, 1);
   assert.equal(records.flatMap((record) => record.external_runs).length, 1);
   assert.equal(records.find((record) => record.slug === "harbor-index-1-4").external_runs[0].availability.state, "source-record-only");
   assert.equal(records.filter((record) => record.license.redistribution === "blocked").length, 2);
   assert.deepEqual(await loadClaims(root, records), []);
+});
+
+test("published bundle bytes match the catalog digest", async () => {
+  const records = await loadCatalog(root);
+  const trajectory = records.find((record) => record.slug === "terminal-bench-2").trajectories[0];
+  const bundle = await readFile(path.join(root, "public", "bundles", path.basename(new URL(trajectory.bundle_url).pathname)));
+  assert.equal(bundle.subarray(0, 2).toString(), "PK");
+  assert.equal(createHash("sha256").update(bundle).digest("hex"), trajectory.sha256);
+  assert.ok(bundle.length < 32 * 1024 * 1024);
 });
 
 test("claims bind to an exact catalog revision and require review decisions", async () => {
@@ -70,6 +82,24 @@ test("v1 records without external runs remain valid", () => {
   const record = fixture();
   delete record.external_runs;
   assert.equal(validateBenchmark(record).slug, "fixture");
+});
+
+test("Terminal-Bench showcase conversion preserves exact source facts", () => {
+  const row = {
+    task_name: terminalBenchSource.task_name, trial_id: terminalBenchSource.trial_id, trial_name: "adaptive-rejection-sampler__fixture",
+    agent: "mini-swe-agent", model: "model@provider", reward: 0, duration_seconds: 2, input_tokens: 10, output_tokens: 3, cache_tokens: 0, cost_cents: 0.5,
+    started_at: "2025-11-03T14:21:38Z",
+    steps: JSON.stringify([
+      { src: "user", msg: "Solve the task", tools: null, obs: null },
+      { src: "agent", msg: "Inspect first", tools: [{ fn: "bash_command", cmd: "ls" }], obs: "file.txt" }
+    ])
+  };
+  const records = convertTerminalBenchRow(row).trim().split("\n").map(JSON.parse);
+  assert.equal(records[0].metadata.source_revision, terminalBenchSource.revision);
+  assert.equal(records.find((record) => record.record_type === "trajectory").metadata.agent_version, "unavailable in source");
+  assert.deepEqual(records.filter((record) => record.record_type === "event").map((record) => record.kind), ["message", "generation", "tool", "observation"]);
+  assert.equal(records.find((record) => record.name === "pass").value, false);
+  assert.equal(records.at(-1).records, records.length - 1);
 });
 
 function fixture() {

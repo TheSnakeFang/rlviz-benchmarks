@@ -4,7 +4,7 @@ test("shows exact source and redistribution state without inventing results", as
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "See the run. Check the benchmark." })).toBeVisible();
   await expect(page.locator(".benchmark")).toHaveCount(4);
-  await expect(page.getByText("4 of 4 pinned benchmark records · 0 published trajectories · 1 external run")).toBeVisible();
+  await expect(page.getByText("4 of 4 pinned benchmark records · 1 published trajectory · 1 external run")).toBeVisible();
   await expect(page.getByText("redistribution blocked", { exact: true })).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "SWE-bench Verified" })).toBeVisible();
   await expect(page.getByText("audit priority", { exact: true })).toBeVisible();
@@ -37,4 +37,13 @@ test("opens an exact benchmark detail without hiding provenance gaps", async ({ 
   await expect(page.getByText(/source record only as of 2026-08-20/)).toBeVisible();
   await expect(page.getByText("Absence of a claim is not a quality endorsement.", { exact: false })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+});
+
+test("hands a reviewed trajectory to RLViz with its full digest", async ({ page }) => {
+  await page.goto("/benchmark.html?slug=terminal-bench-2");
+  await expect(page.getByRole("heading", { level: 1, name: "Terminal-Bench 2.0" })).toBeVisible();
+  const link = page.getByRole("link", { name: "inspect trajectory" });
+  await expect(link).toHaveAttribute("href", /bundle=https%3A%2F%2Fraw\.githubusercontent\.com/);
+  await expect(link).toHaveAttribute("href", /sha256=3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1/);
+  await expect(page.getByText(/mini-swe-agent; version unavailable in source/)).toBeVisible();
 });

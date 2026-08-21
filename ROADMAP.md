@@ -16,18 +16,19 @@
 - Pinned SWE-rebench V2 trajectory availability review; the evaluated licensed corpus has zero exact task overlap and remains unpublished
 - Second licensed, manually reviewed Terminal-Bench reward pair showing a concrete QEMU terminal-control outcome difference
 
-## Next
+## Scaling gates
 
-1. Expand the licensed reviewed trajectory set beyond the first Terminal-Bench
-   task pair. Each entry must pin the task, environment, verifier, harness, model,
-   agent, run, bundle, and source revisions.
-2. Move immutable records to a database only when catalog volume or concurrent
+Further benchmark imports remain ongoing curation, not an architecture gate.
+Each entry must pin the task, environment, verifier, harness, model, agent, run,
+bundle, and source revisions; unavailable runtime facts stay explicit.
+
+1. Move immutable records to a database only when catalog volume or concurrent
    review makes repository-backed records inadequate.
-3. Add account-backed claims and stewardship at that boundary. Prefer GitHub
+2. Add account-backed claims and stewardship at that boundary. Prefer GitHub
    for maintainer identity; evaluate Google for recovery and broad access. Add
    X only if it serves a demonstrated community workflow rather than vanity
    identity.
-4. Add private or expiring bundle storage only with explicit upload, deletion,
+3. Add private or expiring bundle storage only with explicit upload, deletion,
    access-control, and abuse-handling contracts.
 
 Deployment, a custom domain, paid infrastructure, and authentication are

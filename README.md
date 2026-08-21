@@ -59,6 +59,9 @@ Authentication, claims, repairs, reputation, and maintainer tools are later
 write surfaces. Reading the catalog and opening RLViz never requires an
 account.
 
+See [Harbor interoperability](HARBOR.md) for the boundary between live Hub job
+or trial links and durable, digest-pinned RLViz evidence.
+
 ## Reproduce the first Terminal-Bench import
 
 The showcase importer refuses to run if the public trajectory dataset has

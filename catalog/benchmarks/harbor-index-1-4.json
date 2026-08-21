@@ -3,7 +3,7 @@
   "slug": "harbor-index-1-4",
   "name": "Harbor-Index 1.4",
   "catalog_state": "source-pinned",
-  "summary": "Harbor-Index release pin. Metadata is cataloged, but content redistribution is blocked pending explicit license evidence.",
+  "summary": "Pinned Harbor-Index 1.4 release and one source-reported submission.",
   "upstream": {
     "kind": "github",
     "url": "https://github.com/harbor-framework/harbor-index",
@@ -18,7 +18,7 @@
   },
   "quality": {
     "review_state": "not-reviewed",
-    "note": "Upstream describes a human-audited selection process; this catalog has not independently reproduced or endorsed those audits."
+    "note": "The upstream audit has not been independently reproduced."
   },
   "references": [
     { "label": "Release tag", "url": "https://github.com/harbor-framework/harbor-index/tree/harbor-index-1.4" }
@@ -38,7 +38,7 @@
       "availability": {
         "state": "source-record-only",
         "checked_at": "2026-08-20",
-        "reason": "The submission's declared source job is no longer publicly reachable. Its pinned source record remains available."
+        "reason": "The source job is no longer public. The pinned submission record remains available."
       }
     }
   ],

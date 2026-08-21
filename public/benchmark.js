@@ -23,7 +23,6 @@ async function loadDetail() {
 
 function render(record, claims) {
   document.title = `${record.name} · RLViz Benchmarks`;
-  document.querySelector("#detail-eyebrow").textContent = `exact revision · ${record.upstream.version}`;
   document.querySelector("#detail-title").textContent = record.name;
   document.querySelector("#detail-summary").textContent = record.summary;
   const badge = document.querySelector("#detail-badge");
@@ -43,11 +42,11 @@ function render(record, claims) {
   const runs = document.querySelector("#run-list");
   for (const trajectory of record.trajectories) runs.append(trajectoryItem(trajectory));
   for (const externalRun of record.external_runs ?? []) runs.append(externalRunItem(externalRun));
-  if (!runs.children.length) runs.append(element("p", "empty-detail", "No reviewed trajectories or external runs are cataloged for this revision."));
+  if (!runs.children.length) runs.append(element("p", "empty-detail", "No runs are published for this revision."));
 
   const claimList = document.querySelector("#claim-list");
   for (const claim of claims) claimList.append(claimItem(claim));
-  if (!claims.length) claimList.append(element("p", "empty-detail", "No evidence claims are recorded for this revision. Absence of a claim is not a quality endorsement."));
+  if (!claims.length) claimList.append(element("p", "empty-detail", "No claims recorded. This is not a quality review."));
   status.remove();
   detail.hidden = false;
 }

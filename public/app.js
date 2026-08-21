@@ -1,4 +1,4 @@
-import { element, fact, factLink, loadIndex } from "./page-utils.js";
+import { element, fact, factLink, loadIndex, rlvizURL } from "./page-utils.js";
 
 const list = document.querySelector("#benchmark-list");
 const status = document.querySelector("#catalog-status");
@@ -51,9 +51,12 @@ function benchmarkCard(record) {
     const dt = element("dt", "", "run"); const dd = element("dd");
     const choice = element("span", "trajectory-choice");
     const detailURL = `/trajectory.html?${new URLSearchParams({ benchmark: record.slug, id: trajectory.id })}`;
+    const links = element("span", "trajectory-links");
     const link = element("a", "trajectory-link", `${trajectory.task_id} · reward ${trajectory.outcome?.reward ?? "?"}`); link.href = detailURL;
+    const open = element("a", "trajectory-open", "Open in RLViz"); open.href = rlvizURL(trajectory); open.rel = "noreferrer";
+    links.append(link, open);
     const meta = element("span", "trajectory-meta", trajectory.provenance.agent.split(";")[0]);
-    choice.append(link, meta); dd.append(choice); details.append(dt, dd);
+    choice.append(links, meta); dd.append(choice); details.append(dt, dd);
   }
   for (const externalRun of record.external_runs ?? []) {
     const dt = element("dt", "", "run"); const dd = element("dd", "external-run");

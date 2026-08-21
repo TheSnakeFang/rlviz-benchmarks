@@ -38,7 +38,7 @@ function render(benchmark, trajectory) {
   fact(evidence, "redaction", trajectory.redaction_confirmed ? "confirmed" : "not confirmed");
   fact(evidence, "bundle sha256", trajectory.sha256, "revision");
   factLink(evidence, "benchmark", `/benchmark.html?${new URLSearchParams({ slug: benchmark.slug })}`, `${benchmark.name} · exact record`);
-  document.querySelector("#trajectory-actions").replaceWith(actions([["inspect in RLViz", rlvizURL(trajectory)], ["download bundle", trajectory.bundle_url]]));
+  document.querySelector("#trajectory-actions").replaceWith(actions([["Open in RLViz", rlvizURL(trajectory)], ["Download .rlviz", trajectory.bundle_url]]));
 
   const execution = document.querySelector("#execution-facts");
   for (const [label, value] of Object.entries(trajectory.provenance)) fact(execution, label, value, ["environment", "verifier", "run"].includes(label) ? "revision" : "");

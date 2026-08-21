@@ -48,8 +48,10 @@ input { width: 240px; padding: 6px 8px; border: 1px solid var(--hairline); borde
 .blocked, .run-boundary { color: var(--error); }
 .trajectory-empty, .trajectory-meta, .run-provenance, .run-metrics { color: var(--ink-secondary); }
 .trajectory-choice, .external-run { display: grid; gap: 3px; }
+.trajectory-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .trajectory-link { justify-self: start; padding: 4px 7px; border: 1px solid var(--hairline); background: var(--surface); text-decoration: none; font-weight: 650; }
 .trajectory-link:hover { border-color: var(--ink); }
+.trajectory-open { color: var(--ink-secondary); font-size: 11px; }
 .trajectory-meta, .run-provenance, .run-metrics, .run-boundary { font-size: 11px; line-height: 1.35; }
 .catalog-note { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 0; border-top: 1px solid var(--hairline); }
 .catalog-note a { font-size: 12px; }
@@ -88,6 +90,7 @@ footer { min-height: 48px; display: flex; align-items: center; justify-content: 
   input { width: 100%; }
   .benchmark { grid-template-columns: 1fr; gap: 12px; padding: 18px 0; }
   .benchmark .facts { grid-column: auto; }
+  .trajectory-links { align-items: flex-start; flex-direction: column; gap: 4px; }
   .catalog-note, footer { align-items: flex-start; flex-direction: column; }
   .detail-header, .detail-section { grid-template-columns: 1fr; gap: 16px; }
   .detail-facts { grid-template-columns: 96px minmax(0, 1fr); }

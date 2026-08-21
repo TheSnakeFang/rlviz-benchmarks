@@ -3,7 +3,7 @@
   "slug": "swe-bench-verified",
   "name": "SWE-bench Verified",
   "catalog_state": "audit-priority",
-  "summary": "The current public dataset revision is pinned as an audit target. The Verified name is not treated as a blanket validity claim.",
+  "summary": "Pinned public dataset revision for task-level audits.",
   "upstream": {
     "kind": "huggingface",
     "url": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified",
@@ -18,7 +18,7 @@
   },
   "quality": {
     "review_state": "audit-priority",
-    "note": "No task is presumed solvable or verifier-correct. Future claims must identify an exact task, environment, verifier, evidence, and catalog revision."
+    "note": "No task-level quality claims are recorded."
   },
   "references": [
     { "label": "Evaluation code", "url": "https://github.com/SWE-bench/SWE-bench" }

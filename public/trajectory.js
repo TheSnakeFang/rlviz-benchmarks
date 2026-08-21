@@ -28,9 +28,8 @@ function render(benchmark, trajectory) {
   back.href = taskURL;
   back.textContent = `← ${trajectory.task_id}`;
   const reward = trajectory.outcome?.reward ?? "unavailable in source";
-  document.querySelector("#detail-eyebrow").textContent = `${benchmark.name} · source-reported reward ${reward}`;
   document.querySelector("#detail-title").textContent = trajectory.task_id;
-  document.querySelector("#detail-summary").textContent = `${trajectory.provenance.agent} using ${trajectory.provenance.model}.`;
+  document.querySelector("#detail-summary").textContent = `${benchmark.name} · reward ${reward} · ${trajectory.provenance.agent} · ${trajectory.provenance.model}`;
 
   const evidence = document.querySelector("#evidence-facts");
   fact(evidence, "reward", reward);

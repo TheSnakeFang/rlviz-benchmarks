@@ -15,9 +15,8 @@ try {
 }
 
 function renderClaims(claims, contributors) {
-  document.querySelector("#claim-count").textContent = String(claims.length);
-  document.querySelector("#resolved-count").textContent = String(claims.filter((claim) => claim.status === "resolved").length);
-  document.querySelector("#contributor-count").textContent = String(contributors.length);
+  const resolved = claims.filter((claim) => claim.status === "resolved").length;
+  document.querySelector("#claims-status").textContent = `${claims.length} ${claims.length === 1 ? "claim" : "claims"} · ${resolved} resolved · ${contributors.length} ${contributors.length === 1 ? "contributor" : "contributors"}`;
 }
 
 filter.addEventListener("input", render);
@@ -53,7 +52,7 @@ function benchmarkCard(record) {
     const choice = element("span", "trajectory-choice");
     const detailURL = `/trajectory.html?${new URLSearchParams({ benchmark: record.slug, id: trajectory.id })}`;
     const link = element("a", "trajectory-link", `${trajectory.task_id} · reward ${trajectory.outcome?.reward ?? "?"}`); link.href = detailURL;
-    const meta = element("span", "trajectory-meta", `${trajectory.provenance.agent.split(";")[0]} · review provenance, then open in RLViz`);
+    const meta = element("span", "trajectory-meta", trajectory.provenance.agent.split(";")[0]);
     choice.append(link, meta); dd.append(choice); details.append(dt, dd);
   }
   for (const externalRun of record.external_runs ?? []) {

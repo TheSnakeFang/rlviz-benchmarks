@@ -3,7 +3,7 @@
   "slug": "swe-rebench-v2",
   "name": "SWE-rebench V2",
   "catalog_state": "source-pinned",
-  "summary": "Language-agnostic software-engineering benchmark dataset pinned at an immutable Hugging Face revision. No reviewed trajectory is published because the evaluated licensed corpus has no task overlap with this exact benchmark revision.",
+  "summary": "Pinned SWE-rebench V2 dataset revision. No matching reviewed trajectories are available.",
   "upstream": {
     "kind": "huggingface",
     "url": "https://huggingface.co/datasets/nebius/SWE-rebench-V2",
@@ -19,7 +19,7 @@
   },
   "quality": {
     "review_state": "not-reviewed",
-    "note": "Dataset generation and filtering claims are upstream claims until independently reproduced at this exact revision."
+    "note": "Generation and filtering claims have not been independently reproduced."
   },
   "references": [
     { "label": "Generation and evaluation tooling", "url": "https://github.com/SWE-rebench/SWE-rebench-V2" },

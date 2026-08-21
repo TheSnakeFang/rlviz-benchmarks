@@ -2,23 +2,32 @@ import { expect, test } from "@playwright/test";
 
 test("shows exact source and redistribution state without inventing results", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "See the run. Check the benchmark." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Benchmark catalog" })).toBeVisible();
   await expect(page.locator(".benchmark")).toHaveCount(4);
   await expect(page.getByText("4 of 4 pinned benchmark records · 4 published trajectories · 1 external run")).toBeVisible();
-  await expect(page.locator("#claim-count")).toHaveText("1");
   await expect(page.getByText("redistribution blocked", { exact: true })).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "SWE-bench Verified" })).toBeVisible();
   await expect(page.getByText("audit priority", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "upstream" }).first()).toHaveAttribute("href", /^https:\/\//);
-  await expect(page.getByRole("heading", { name: "Claims & repairs" })).toBeVisible();
-  await expect(page.locator("#resolved-count")).toHaveText("0");
-  await expect(page.locator("#contributor-count")).toHaveText("1");
-  await expect(page.getByRole("link", { name: "read the evidence model" })).toHaveAttribute("href", /README\.md#publication-boundary/);
+  await expect(page.getByRole("heading", { name: "Evidence claims" })).toBeVisible();
+  await expect(page.locator("#claims-status")).toHaveText("1 claim · 0 resolved · 1 contributor");
+  await expect(page.getByRole("link", { name: "Review policy" })).toHaveAttribute("href", /README\.md#publication-boundary/);
   await expect(page.locator(".benchmark").first().getByRole("heading", { name: "Terminal-Bench 2.0" })).toBeVisible();
   await expect(page.getByRole("link", { name: "adaptive-rejection-sampler · reward 0" })).toHaveAttribute("href", /trajectory\.html\?benchmark=terminal-bench-2/);
   await expect(page.getByRole("link", { name: "view pinned submission" })).toHaveAttribute("href", /github\.com\/harbor-framework\/harbor-index\/blob\/35f01ec/);
   await expect(page.getByText(/job 5fab3f7b/)).toBeVisible();
   await expect(page.getByText("source-reported · source record only")).toBeVisible();
+});
+
+test("uses the compact RLViz visual system without landing-page decoration", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".eyebrow, .principles, .claim-metrics, .intro-actions")).toHaveCount(0);
+  const presentation = await page.evaluate(() => ({
+    backgroundImage: getComputedStyle(document.body).backgroundImage,
+    headingSize: Number.parseFloat(getComputedStyle(document.querySelector("h1")).fontSize),
+  }));
+  expect(presentation.backgroundImage).toBe("none");
+  expect(presentation.headingSize).toBeLessThanOrEqual(32);
 });
 
 test("filters records and remains readable at mobile width", async ({ page }) => {
@@ -39,7 +48,7 @@ test("opens an exact benchmark detail without hiding provenance gaps", async ({ 
   await expect(page.getByText("35f01ec42b14c2b5da476099f5b0d209240bca5b", { exact: true })).toBeVisible();
   await expect(page.getByText(/Harbor job 5fab3f7b-0e44-4924-bbed-026e8387ef84/)).toBeVisible();
   await expect(page.getByText(/source record only as of 2026-08-20/)).toBeVisible();
-  await expect(page.getByText("Absence of a claim is not a quality endorsement.", { exact: false })).toBeVisible();
+  await expect(page.getByText("No claims recorded. This is not a quality review.")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
 });
 

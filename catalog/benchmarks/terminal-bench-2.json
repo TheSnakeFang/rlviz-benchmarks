@@ -3,7 +3,7 @@
   "slug": "terminal-bench-2",
   "name": "Terminal-Bench 2.0",
   "catalog_state": "showcased",
-  "summary": "Official terminal-agent benchmark source with two reviewed reward-0/reward-1 task pairs published as digest-pinned RLViz bundles.",
+  "summary": "Terminal-Bench 2.0 with four reviewed public trajectories across two tasks.",
   "upstream": {
     "kind": "github",
     "url": "https://github.com/harbor-framework/terminal-bench-2",
@@ -19,7 +19,7 @@
   },
   "quality": {
     "review_state": "not-reviewed",
-    "note": "A source pin is not a quality endorsement. Task, environment, verifier, and solvability review has not been performed here."
+    "note": "Task quality, verifier correctness, and solvability have not been reviewed."
   },
   "references": [
     { "label": "Harbor harness", "url": "https://github.com/harbor-framework/harbor" },

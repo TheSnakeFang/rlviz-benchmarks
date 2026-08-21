@@ -27,9 +27,8 @@ function render(benchmark, trajectories) {
   const back = document.querySelector("#benchmark-back");
   back.href = benchmarkURL;
   back.textContent = `← ${benchmark.name}`;
-  document.querySelector("#detail-eyebrow").textContent = `${benchmark.name} · ${benchmark.upstream.version}`;
   document.querySelector("#detail-title").textContent = taskID;
-  document.querySelector("#detail-summary").textContent = `${trajectories.length} reviewed public ${trajectories.length === 1 ? "trajectory" : "trajectories"} at the cataloged benchmark revision.`;
+  document.querySelector("#detail-summary").textContent = `${trajectories.length} reviewed public ${trajectories.length === 1 ? "trajectory" : "trajectories"}.`;
 
   const facts = document.querySelector("#source-facts");
   factLink(facts, "benchmark", benchmarkURL, benchmark.name);

@@ -61,7 +61,7 @@ function trajectoryItem(trajectory) {
   item.append(element("p", "", `${trajectory.provenance.agent} · ${trajectory.provenance.model} · ${trajectory.provenance.harness}`));
   item.append(element("p", "revision", `bundle sha256 ${trajectory.sha256}`));
   const detailURL = `/trajectory.html?${new URLSearchParams({ benchmark: slug, id: trajectory.id })}`;
-  item.append(actions([["inspect trajectory", rlvizURL(trajectory)], ["trajectory details", detailURL], ["bundle source", trajectory.bundle_url]]));
+  item.append(actions([["Open in RLViz", rlvizURL(trajectory)], ["Trajectory details", detailURL], ["Download .rlviz", trajectory.bundle_url]]));
   return item;
 }
 

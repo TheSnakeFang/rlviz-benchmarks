@@ -10,23 +10,22 @@
 - Revision-pinned Harbor submission records, optional public job links, and explicit availability states
 - Benchmark detail pages for source provenance, runs, and evidence claims
 - First licensed, manually reviewed Terminal-Bench failure trajectory with a reproducible importer and digest-pinned RLViz bundle
+- Task and trajectory detail pages that preserve exact provenance and a direct RLViz handoff on mobile
 
 ## Next
 
 1. Expand the licensed reviewed trajectory set beyond the first Terminal-Bench
    sample. Each entry must pin the task, environment, verifier, harness, model,
    agent, run, bundle, and source revisions.
-2. Add task and trajectory detail pages once the first publishable trajectory
-   passes the publication boundary.
-3. Evaluate stable Harbor Hub trial URLs as a task-level import boundary. Job
+2. Evaluate stable Harbor Hub trial URLs as a task-level import boundary. Job
    links are supported; do not duplicate Harbor's runner, registry, or files.
-4. Move immutable records to a database only when catalog volume or concurrent
+3. Move immutable records to a database only when catalog volume or concurrent
    review makes repository-backed records inadequate.
-5. Add account-backed claims and stewardship at that boundary. Prefer GitHub
+4. Add account-backed claims and stewardship at that boundary. Prefer GitHub
    for maintainer identity; evaluate Google for recovery and broad access. Add
    X only if it serves a demonstrated community workflow rather than vanity
    identity.
-6. Add private or expiring bundle storage only with explicit upload, deletion,
+5. Add private or expiring bundle storage only with explicit upload, deletion,
    access-control, and abuse-handling contracts.
 
 Deployment, a custom domain, paid infrastructure, and authentication are

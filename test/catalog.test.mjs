@@ -65,6 +65,12 @@ test("trajectory handoffs require queryless HTTPS and a complete digest", () => 
   assert.throws(() => validateBenchmark(record), /queryless/);
   record.trajectories = [{ ...trajectory(), sha256: "abc" }];
   assert.throws(() => validateBenchmark(record), /full bundle SHA-256/);
+  record.trajectories = [{ ...trajectory(), outcome: { reward: Number.NaN } }];
+  assert.throws(() => validateBenchmark(record), /finite source-reported reward/);
+  const withoutOutcome = trajectory();
+  delete withoutOutcome.outcome;
+  record.trajectories = [withoutOutcome];
+  assert.doesNotThrow(() => validateBenchmark(record));
 });
 
 test("external Harbor runs stay pinned, direct, and separate from trajectories", () => {
@@ -143,6 +149,7 @@ function trajectory() {
     license: "CC-BY-4.0",
     reviewed: true,
     redaction_confirmed: true,
+    outcome: { reward: 0 },
     provenance: { agent: "agent@1", model: "model@1", harness: "harness@1", environment: "env@sha256:a", verifier: "verifier@sha256:b", run: "run@sha256:c" }
   };
 }

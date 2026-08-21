@@ -1,13 +1,12 @@
+import { element, fact, factLink, loadIndex, rlvizURL } from "./page-utils.js";
+
 const list = document.querySelector("#benchmark-list");
 const status = document.querySelector("#catalog-status");
 const filter = document.querySelector("#filter");
 let benchmarks = [];
 
 try {
-  const response = await fetch("/catalog.json", { credentials: "omit" });
-  if (!response.ok) throw new Error(`Catalog returned HTTP ${response.status}`);
-  const catalog = await response.json();
-  if (catalog.schema_version !== "rlviz.dev/benchmark-catalog-index/v1" || !Array.isArray(catalog.benchmarks)) throw new Error("Catalog response is invalid");
+  const catalog = await loadIndex();
   benchmarks = catalog.benchmarks;
   renderClaims(catalog.claims ?? [], catalog.contributors ?? []);
   render();
@@ -48,9 +47,8 @@ function benchmarkCard(record) {
   factLink(details, "license", record.license.evidence_url, record.license.spdx ?? "unverified", record.license.redistribution);
   fact(details, "content", record.license.redistribution === "allowed" ? "redistribution allowed" : "redistribution blocked", record.license.redistribution);
   for (const trajectory of record.trajectories) {
-    const href = `https://rlviz.dev/?${new URLSearchParams({ bundle: trajectory.bundle_url, sha256: trajectory.sha256 })}`;
     const dt = element("dt", "", "run"); const dd = element("dd");
-    const link = element("a", "trajectory-link", "inspect trajectory"); link.href = href; link.rel = "noreferrer";
+    const link = element("a", "trajectory-link", "inspect trajectory"); link.href = rlvizURL(trajectory); link.rel = "noreferrer";
     dd.append(link); details.append(dt, dd);
   }
   for (const externalRun of record.external_runs ?? []) {
@@ -64,20 +62,4 @@ function benchmarkCard(record) {
   if (!record.trajectories.length && !(record.external_runs?.length)) fact(details, "runs", "none published", "trajectory-empty");
   article.append(identity, narrative, details);
   return article;
-}
-
-function fact(list, label, value, className = "") {
-  list.append(element("dt", "", label), element("dd", className, value));
-}
-
-function factLink(list, label, href, text, className = "") {
-  const link = element("a", className, text); link.href = href; link.rel = "noreferrer";
-  const dd = element("dd"); dd.append(link); list.append(element("dt", "", label), dd);
-}
-
-function element(tag, className = "", text = "") {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text) node.textContent = text;
-  return node;
 }

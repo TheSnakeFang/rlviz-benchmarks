@@ -47,6 +47,8 @@ A trajectory can appear only when its record includes:
 - an immutable benchmark revision and task identity
 - agent, model, harness, environment, verifier, and run provenance, with
   unavailable facts explicitly absent rather than inferred
+- source-reported outcome data when available, kept separate from
+  benchmark-quality claims
 - a reviewed and redaction-confirmed `.rlviz` bundle
 - the complete bundle SHA-256 and a public HTTPS URL without credentials,
   query parameters, redirects, or expiring tokens

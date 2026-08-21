@@ -1,4 +1,4 @@
-import { element, fact, factLink, loadIndex, rlvizURL } from "./page-utils.js";
+import { element, fact, factLink, loadIndex } from "./page-utils.js";
 
 const list = document.querySelector("#benchmark-list");
 const status = document.querySelector("#catalog-status");
@@ -24,7 +24,9 @@ filter.addEventListener("input", render);
 
 function render() {
   const query = filter.value.trim().toLowerCase();
-  const visible = benchmarks.filter((record) => JSON.stringify([record.name, record.slug, record.catalog_state, record.upstream.revision]).toLowerCase().includes(query));
+  const visible = benchmarks
+    .filter((record) => JSON.stringify([record.name, record.slug, record.catalog_state, record.upstream.revision]).toLowerCase().includes(query))
+    .sort((left, right) => Number(Boolean(right.trajectories.length)) - Number(Boolean(left.trajectories.length)) || left.name.localeCompare(right.name));
   const trajectories = visible.reduce((sum, record) => sum + record.trajectories.length, 0);
   const externalRuns = visible.reduce((sum, record) => sum + (record.external_runs?.length ?? 0), 0);
   status.textContent = `${visible.length} of ${benchmarks.length} pinned benchmark records · ${trajectories} published ${trajectories === 1 ? "trajectory" : "trajectories"} · ${externalRuns} external ${externalRuns === 1 ? "run" : "runs"}`;
@@ -48,8 +50,11 @@ function benchmarkCard(record) {
   fact(details, "content", record.license.redistribution === "allowed" ? "redistribution allowed" : "redistribution blocked", record.license.redistribution);
   for (const trajectory of record.trajectories) {
     const dt = element("dt", "", "run"); const dd = element("dd");
-    const link = element("a", "trajectory-link", "inspect trajectory"); link.href = rlvizURL(trajectory); link.rel = "noreferrer";
-    dd.append(link); details.append(dt, dd);
+    const choice = element("span", "trajectory-choice");
+    const detailURL = `/trajectory.html?${new URLSearchParams({ benchmark: record.slug, id: trajectory.id })}`;
+    const link = element("a", "trajectory-link", `${trajectory.task_id} · reward ${trajectory.outcome?.reward ?? "?"}`); link.href = detailURL;
+    const meta = element("span", "trajectory-meta", `${trajectory.provenance.agent.split(";")[0]} · review provenance, then open in RLViz`);
+    choice.append(link, meta); dd.append(choice); details.append(dt, dd);
   }
   for (const externalRun of record.external_runs ?? []) {
     const dt = element("dt", "", "run"); const dd = element("dd", "external-run");

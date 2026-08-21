@@ -23,6 +23,9 @@ main { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
 .eyebrow { margin: 0 0 15px; color: var(--muted); font: 700 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .1em; text-transform: uppercase; }
 h1 { max-width: 900px; margin: 0; font-size: clamp(52px, 10vw, 126px); line-height: .83; letter-spacing: -.075em; }
 .lede { max-width: 760px; margin: 40px 0 55px; font-size: clamp(20px, 3vw, 31px); line-height: 1.18; }
+.intro-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin: -25px 0 48px; font-size: 13px; font-weight: 700; }
+.intro-actions a { padding: 10px 0; }
+.intro-actions .primary-action { padding: 10px 12px; border: 1px solid var(--ink); text-decoration: none; }
 .principles { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-top: 1px solid var(--line); }
 .principles div { padding: 18px 24px 0 0; }
 .principles dt { font-weight: 750; }
@@ -49,6 +52,9 @@ input { width: min(320px, 70vw); padding: 10px 11px; border: 1px solid var(--lin
 .blocked { color: var(--accent); }
 .trajectory-empty { color: var(--muted); }
 .trajectory-link { display: inline-block; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--ink); text-decoration: none; font-weight: 700; }
+.trajectory-choice { display: grid; gap: 4px; margin-top: 8px; }
+.trajectory-choice .trajectory-link { justify-self: start; margin-top: 0; }
+.trajectory-meta { color: var(--muted); font-size: 11px; line-height: 1.4; }
 .external-run { display: grid; gap: 6px; }
 .external-run .trajectory-link { justify-self: start; margin-top: 0; }
 .run-provenance, .run-metrics, .run-boundary { color: var(--muted); font-size: 11px; line-height: 1.4; }
@@ -85,8 +91,9 @@ footer { min-height: 64px; padding: 18px clamp(18px, 4vw, 64px); display: flex; 
 .empty-detail { color: var(--muted); line-height: 1.5; }
 @media (max-width: 760px) {
   .masthead { padding-inline: 18px; }
-  nav a:first-child { display: none; }
   .intro { padding-top: 80px; }
+  .intro-actions { align-items: stretch; flex-direction: column; }
+  .intro-actions a { width: fit-content; }
   .principles { grid-template-columns: 1fr; }
   .principles div { padding-top: 16px; }
   .catalog > header { align-items: stretch; flex-direction: column; }

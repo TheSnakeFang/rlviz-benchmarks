@@ -62,7 +62,7 @@ account.
 See [Harbor interoperability](HARBOR.md) for the boundary between live Hub job
 or trial links and durable, digest-pinned RLViz evidence.
 
-## Reproduce the first Terminal-Bench import
+## Reproduce a Terminal-Bench import
 
 The showcase importer refuses to run if the public trajectory dataset has
 moved from its cataloged Hugging Face revision. It then requests one exact row
@@ -77,4 +77,5 @@ rlviz bundle create /tmp/terminalbench.ndjson --out reviewed.rlviz \
 
 The affirmative review flags belong only after inspecting the complete emitted
 trace. The importer does not make those judgments. Pass `rewarded` instead of
-`failure` to reproduce the paired source-reported reward-1 trajectory.
+`failure` to reproduce the paired source-reported reward-1 trajectory. The
+reviewed `qemu-startup` pair uses `qemuFailure` and `qemuRewarded`.

@@ -4,12 +4,13 @@ import { fileURLToPath } from "node:url";
 
 const sharedSource = Object.freeze({
   dataset: "yoonholee/terminalbench-trajectories",
-  revision: "04e8940f5b6736a7ce8d22224fe2f2af74163ed2",
-  task_name: "adaptive-rejection-sampler"
+  revision: "04e8940f5b6736a7ce8d22224fe2f2af74163ed2"
 });
 export const sources = Object.freeze({
-  failure: Object.freeze({ ...sharedSource, row: 242, trial_id: "882393f2-4c26-43c1-8865-b45508c948db" }),
-  rewarded: Object.freeze({ ...sharedSource, row: 244, trial_id: "5c1740b8-0a8f-42ce-a38f-151748c23028" })
+  failure: Object.freeze({ ...sharedSource, task_name: "adaptive-rejection-sampler", row: 242, trial_id: "882393f2-4c26-43c1-8865-b45508c948db" }),
+  rewarded: Object.freeze({ ...sharedSource, task_name: "adaptive-rejection-sampler", row: 244, trial_id: "5c1740b8-0a8f-42ce-a38f-151748c23028" }),
+  qemuFailure: Object.freeze({ ...sharedSource, task_name: "qemu-startup", row: 40384, trial_id: "5ae92adc-ef10-409e-babd-d15abe9a59ab" }),
+  qemuRewarded: Object.freeze({ ...sharedSource, task_name: "qemu-startup", row: 40385, trial_id: "0f174334-04c3-4881-8ca5-fb8a79a70b19" })
 });
 export const source = sources.failure;
 
@@ -74,6 +75,6 @@ function normalizeDate(value) { return new Date(value).toISOString(); }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const output = process.argv[2];
   const sourceName = process.argv[3] ?? "failure";
-  if (!output || !sources[sourceName]) throw new Error("usage: node scripts/import-terminalbench-showcase.mjs OUTPUT.ndjson [failure|rewarded]");
+  if (!output || !sources[sourceName]) throw new Error(`usage: node scripts/import-terminalbench-showcase.mjs OUTPUT.ndjson [${Object.keys(sources).join("|")}]`);
   await importPinnedRow(path.resolve(output), sources[sourceName]);
 }

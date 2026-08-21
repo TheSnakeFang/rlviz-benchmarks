@@ -3,7 +3,7 @@
   "slug": "terminal-bench-2",
   "name": "Terminal-Bench 2.0",
   "catalog_state": "showcased",
-  "summary": "Official terminal-agent benchmark source with a reviewed reward-0/reward-1 trajectory pair published as digest-pinned RLViz bundles.",
+  "summary": "Official terminal-agent benchmark source with two reviewed reward-0/reward-1 task pairs published as digest-pinned RLViz bundles.",
   "upstream": {
     "kind": "github",
     "url": "https://github.com/harbor-framework/terminal-bench-2",
@@ -24,7 +24,8 @@
   "references": [
     { "label": "Harbor harness", "url": "https://github.com/harbor-framework/harbor" },
     { "label": "Trajectory dataset", "url": "https://huggingface.co/datasets/yoonholee/terminalbench-trajectories/tree/04e8940f5b6736a7ce8d22224fe2f2af74163ed2" },
-    { "label": "Trajectory license", "url": "https://huggingface.co/datasets/yoonholee/terminalbench-trajectories/blob/04e8940f5b6736a7ce8d22224fe2f2af74163ed2/README.md" }
+    { "label": "Trajectory license", "url": "https://huggingface.co/datasets/yoonholee/terminalbench-trajectories/blob/04e8940f5b6736a7ce8d22224fe2f2af74163ed2/README.md" },
+    { "label": "qemu-startup publication review", "url": "https://github.com/TheSnakeFang/rlviz-benchmarks/blob/main/catalog/reviews/terminal-bench-2-qemu-startup.md" }
   ],
   "external_runs": [],
   "trajectories": [
@@ -66,6 +67,46 @@
         "environment": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
         "verifier": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
         "run": "trial 5c1740b8-0a8f-42ce-a38f-151748c23028"
+      }
+    },
+    {
+      "id": "qemu-startup-terminus-2-gpt-oss-120b-trial-5ae92adc",
+      "task_id": "qemu-startup",
+      "bundle_url": "https://raw.githubusercontent.com/TheSnakeFang/rlviz-benchmarks/main/public/bundles/terminal-bench-2-qemu-startup-terminus-2-reward-0.rlviz",
+      "sha256": "f36ad76baa42a7dead2bf1cf0247b07e8886b43e9ee0e71c757559dd0984c8ce",
+      "license": "Apache-2.0",
+      "reviewed": true,
+      "redaction_confirmed": true,
+      "outcome": {
+        "reward": 0
+      },
+      "provenance": {
+        "agent": "terminus-2; version unavailable in source",
+        "model": "openai/gpt-oss-120b@together_ai",
+        "harness": "yoonholee/terminalbench-trajectories@04e8940f5b6736a7ce8d22224fe2f2af74163ed2 row 40384",
+        "environment": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/qemu-startup; executed image digest unavailable in source",
+        "verifier": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/qemu-startup/tests",
+        "run": "trial 5ae92adc-ef10-409e-babd-d15abe9a59ab"
+      }
+    },
+    {
+      "id": "qemu-startup-terminus-2-gpt-oss-120b-trial-0f174334",
+      "task_id": "qemu-startup",
+      "bundle_url": "https://raw.githubusercontent.com/TheSnakeFang/rlviz-benchmarks/main/public/bundles/terminal-bench-2-qemu-startup-terminus-2-reward-1.rlviz",
+      "sha256": "a38b2273d2a9ae7845574456285c9af17345dbe1bd14ca7bab69d9df2909cd9f",
+      "license": "Apache-2.0",
+      "reviewed": true,
+      "redaction_confirmed": true,
+      "outcome": {
+        "reward": 1
+      },
+      "provenance": {
+        "agent": "terminus-2; version unavailable in source",
+        "model": "openai/gpt-oss-120b@together_ai",
+        "harness": "yoonholee/terminalbench-trajectories@04e8940f5b6736a7ce8d22224fe2f2af74163ed2 row 40385",
+        "environment": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/qemu-startup; executed image digest unavailable in source",
+        "verifier": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/qemu-startup/tests",
+        "run": "trial 0f174334-04c3-4881-8ca5-fb8a79a70b19"
       }
     }
   ]

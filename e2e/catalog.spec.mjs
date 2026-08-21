@@ -4,7 +4,7 @@ test("shows exact source and redistribution state without inventing results", as
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "See the run. Check the benchmark." })).toBeVisible();
   await expect(page.locator(".benchmark")).toHaveCount(4);
-  await expect(page.getByText("4 of 4 pinned benchmark records · 2 published trajectories · 1 external run")).toBeVisible();
+  await expect(page.getByText("4 of 4 pinned benchmark records · 4 published trajectories · 1 external run")).toBeVisible();
   await expect(page.locator("#claim-count")).toHaveText("1");
   await expect(page.getByText("redistribution blocked", { exact: true })).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "SWE-bench Verified" })).toBeVisible();
@@ -45,10 +45,13 @@ test("hands a reviewed trajectory to RLViz with its full digest", async ({ page 
   await page.goto("/benchmark.html?slug=terminal-bench-2");
   await expect(page.getByRole("heading", { level: 1, name: "Terminal-Bench 2.0" })).toBeVisible();
   const link = page.getByRole("link", { name: "inspect trajectory" });
-  await expect(link).toHaveCount(2);
+  await expect(link).toHaveCount(4);
   await expect(link.first()).toHaveAttribute("href", /sha256=3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1/);
   await expect(link.nth(1)).toHaveAttribute("href", /sha256=a60152d61c996b47329708e48601a102e9ccf7549ec5882c29e2d9f061faac01/);
+  await expect(link.nth(2)).toHaveAttribute("href", /sha256=f36ad76baa42a7dead2bf1cf0247b07e8886b43e9ee0e71c757559dd0984c8ce/);
+  await expect(link.nth(3)).toHaveAttribute("href", /sha256=a38b2273d2a9ae7845574456285c9af17345dbe1bd14ca7bab69d9df2909cd9f/);
   await expect(page.getByText(/mini-swe-agent; version unavailable in source/)).toHaveCount(2);
+  await expect(page.getByText(/terminus-2; version unavailable in source/)).toHaveCount(2);
   await expect(page.getByText(/pinned verifier may accept a solution/)).toBeVisible();
 });
 
@@ -62,5 +65,18 @@ test("moves from benchmark to task to exact trajectory evidence", async ({ page 
   await expect(page.getByRole("heading", { level: 2, name: "Execution" })).toBeVisible();
   await expect(page.getByText("3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "inspect in RLViz" })).toHaveAttribute("href", /sha256=3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+});
+
+test("keeps the second reviewed task pair deep and readable", async ({ page }) => {
+  await page.goto("/task.html?benchmark=terminal-bench-2&task=qemu-startup");
+  await expect(page.getByRole("heading", { level: 1, name: "qemu-startup" })).toBeVisible();
+  await expect(page.getByText("source-reported reward 0", { exact: true })).toBeVisible();
+  await expect(page.getByText("source-reported reward 1", { exact: true })).toBeVisible();
+  await page.locator(".detail-item").filter({ hasText: "source-reported reward 1" }).getByRole("link", { name: "trajectory details" }).click();
+  await expect(page).toHaveURL(/trajectory\.html\?benchmark=terminal-bench-2&id=qemu-startup-terminus-2-gpt-oss-120b-trial-0f174334/);
+  await expect(page.getByText(/executed image digest unavailable in source/)).toBeVisible();
+  await expect(page.getByText("a38b2273d2a9ae7845574456285c9af17345dbe1bd14ca7bab69d9df2909cd9f", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "inspect in RLViz" })).toHaveAttribute("href", /sha256=a38b2273d2a9ae7845574456285c9af17345dbe1bd14ca7bab69d9df2909cd9f/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
 });

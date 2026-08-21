@@ -12,7 +12,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 test("all catalog records have immutable, publication-safe provenance", async () => {
   const records = await loadCatalog(root);
   assert.deepEqual(records.map((record) => record.slug), ["harbor-index-1-4", "swe-bench-verified", "swe-rebench-v2", "terminal-bench-2"]);
-  assert.equal(records.flatMap((record) => record.trajectories).length, 2);
+  assert.equal(records.flatMap((record) => record.trajectories).length, 4);
   assert.equal(records.flatMap((record) => record.external_runs).length, 1);
   assert.equal(records.find((record) => record.slug === "harbor-index-1-4").external_runs[0].availability.state, "source-record-only");
   assert.equal(records.filter((record) => record.license.redistribution === "blocked").length, 2);
@@ -116,6 +116,9 @@ test("Terminal-Bench showcase conversion preserves exact source facts", () => {
   assert.notEqual(terminalBenchSources.rewarded.trial_id, terminalBenchSource.trial_id);
   const rewarded = convertTerminalBenchRow({ ...row, trial_id: terminalBenchSources.rewarded.trial_id, reward: 1 }, terminalBenchSources.rewarded).trim().split("\n").map(JSON.parse);
   assert.equal(rewarded.find((record) => record.name === "pass").value, true);
+  assert.equal(terminalBenchSources.qemuFailure.row, 40384);
+  assert.equal(terminalBenchSources.qemuRewarded.task_name, "qemu-startup");
+  assert.throws(() => convertTerminalBenchRow({ ...row, task_name: "qemu-startup" }, terminalBenchSources.qemuRewarded), /pinned trial/);
 });
 
 function fixture() {

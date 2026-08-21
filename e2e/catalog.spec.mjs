@@ -13,7 +13,9 @@ test("shows exact source and redistribution state without inventing results", as
   await expect(page.getByRole("heading", { name: "Claims & repairs" })).toBeVisible();
   await expect(page.locator("#resolved-count")).toHaveText("0");
   await expect(page.locator("#contributor-count")).toHaveText("1");
-  await expect(page.getByRole("link", { name: "file an evidence claim" })).toHaveAttribute("href", /claim\.yml/);
+  await expect(page.getByRole("link", { name: "read the evidence model" })).toHaveAttribute("href", /README\.md#publication-boundary/);
+  await expect(page.locator(".benchmark").first().getByRole("heading", { name: "Terminal-Bench 2.0" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "adaptive-rejection-sampler · reward 0" })).toHaveAttribute("href", /trajectory\.html\?benchmark=terminal-bench-2/);
   await expect(page.getByRole("link", { name: "view pinned submission" })).toHaveAttribute("href", /github\.com\/harbor-framework\/harbor-index\/blob\/35f01ec/);
   await expect(page.getByText(/job 5fab3f7b/)).toBeVisible();
   await expect(page.getByText("source-reported · source record only")).toBeVisible();

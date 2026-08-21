@@ -1,6 +1,7 @@
 # RLViz Benchmarks
 
 A provenance-first catalog of agent benchmark releases and public trajectories.
+The read-only site lives at [benchmarks.rlviz.dev](https://benchmarks.rlviz.dev).
 The catalog complements [RLViz](https://github.com/TheSnakeFang/rlviz): it
 tracks immutable source revisions and hands reviewed public `.rlviz` bundles to
 the local-first reader through an explicit, SHA-256-pinned link.

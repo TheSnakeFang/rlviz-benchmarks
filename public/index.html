@@ -18,6 +18,10 @@
         <p class="eyebrow">Public evidence, exact revisions</p>
         <h1 id="page-title">See the run.<br />Check the benchmark.</h1>
         <p class="lede">A catalog for inspecting agent trajectories without pretending every task, verifier, environment, or score is sound.</p>
+        <div class="intro-actions" aria-label="Catalog actions">
+          <a class="primary-action" href="#catalog-title">Browse benchmark records</a>
+          <a href="https://rlviz.dev">Open your own traces in RLViz</a>
+        </div>
         <dl class="principles">
           <div><dt>immutable</dt><dd>Every benchmark and bundle is pinned by content revision.</dd></div>
           <div><dt>inspectable</dt><dd>Trajectory links open the full evidence in RLViz, including on mobile.</dd></div>
@@ -27,7 +31,7 @@
 
       <section class="catalog" aria-labelledby="catalog-title">
         <header>
-          <div><p class="eyebrow">Initial source set</p><h2 id="catalog-title">Benchmarks</h2></div>
+          <div><p class="eyebrow">Choose a record, then a run</p><h2 id="catalog-title">Benchmarks</h2></div>
           <label>Filter <input id="filter" type="search" placeholder="name, state, revision" autocomplete="off" /></label>
         </header>
         <p id="catalog-status" role="status">Loading pinned records…</p>
@@ -38,7 +42,7 @@
         <div><p class="eyebrow">Reviewed public record</p><h2 id="claims-title">Claims &amp; repairs</h2></div>
         <div class="claim-metrics"><div><b id="claim-count">0</b><span>claims</span></div><div><b id="resolved-count">0</b><span>resolved</span></div><div><b id="contributor-count">0</b><span>contributors</span></div></div>
         <p>A failed rollout is evidence, not a verdict. Claims bind one task and component to an exact benchmark revision, then preserve the evidence, review decision, and repair independently of leaderboard scores.</p>
-        <a class="claim-action" href="https://github.com/TheSnakeFang/rlviz-benchmarks/issues/new?template=claim.yml">file an evidence claim</a>
+        <a class="claim-action" href="https://github.com/TheSnakeFang/rlviz-benchmarks/blob/main/README.md#publication-boundary">read the evidence model</a>
       </section>
 
       <aside class="boundary" aria-label="Catalog publication boundary">

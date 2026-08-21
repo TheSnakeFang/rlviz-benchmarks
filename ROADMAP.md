@@ -14,6 +14,7 @@
 - Task and trajectory detail pages that preserve exact provenance and a direct RLViz handoff on mobile
 - Documented Harbor job/trial link contract: source-provided live pointers remain distinct from durable bundle evidence
 - Pinned SWE-rebench V2 trajectory availability review; the evaluated licensed corpus has zero exact task overlap and remains unpublished
+- Second licensed, manually reviewed Terminal-Bench reward pair showing a concrete QEMU terminal-control outcome difference
 
 ## Next
 

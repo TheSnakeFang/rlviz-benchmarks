@@ -15,6 +15,7 @@
 - Documented Harbor job/trial link contract: source-provided live pointers remain distinct from durable bundle evidence
 - Pinned SWE-rebench V2 trajectory availability review; the evaluated licensed corpus has zero exact task overlap and remains unpublished
 - Second licensed, manually reviewed Terminal-Bench reward pair showing a concrete QEMU terminal-control outcome difference
+- Read-only catalog deployed at `benchmarks.rlviz.dev`, with reviewed records ordered first and named run links leading through provenance before the digest-pinned RLViz handoff
 
 ## Scaling gates
 
@@ -31,5 +32,6 @@ bundle, and source revisions; unavailable runtime facts stay explicit.
 3. Add private or expiring bundle storage only with explicit upload, deletion,
    access-control, and abuse-handling contracts.
 
-Deployment, a custom domain, paid infrastructure, and authentication are
+The read-only deployment and custom domain are live. Paid infrastructure,
+authentication, account-backed submissions, and public reputation remain
 separate approval gates.

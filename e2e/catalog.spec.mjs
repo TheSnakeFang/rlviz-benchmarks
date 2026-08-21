@@ -47,3 +47,16 @@ test("hands a reviewed trajectory to RLViz with its full digest", async ({ page 
   await expect(link).toHaveAttribute("href", /sha256=3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1/);
   await expect(page.getByText(/mini-swe-agent; version unavailable in source/)).toBeVisible();
 });
+
+test("moves from benchmark to task to exact trajectory evidence", async ({ page }) => {
+  await page.goto("/benchmark.html?slug=terminal-bench-2");
+  await page.getByRole("link", { name: "adaptive-rejection-sampler" }).click();
+  await expect(page).toHaveURL(/task\.html\?benchmark=terminal-bench-2&task=adaptive-rejection-sampler/);
+  await expect(page.getByText("source-reported reward 0", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "trajectory details" }).click();
+  await expect(page).toHaveURL(/trajectory\.html\?benchmark=terminal-bench-2&id=adaptive-rejection-sampler-mini-swe-agent-gpt-oss-120b/);
+  await expect(page.getByRole("heading", { level: 2, name: "Execution" })).toBeVisible();
+  await expect(page.getByText("3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "inspect in RLViz" })).toHaveAttribute("href", /sha256=3fc8dc4ab29664c629777fcdbb46de42c8eee4944ec4d1d1790417aab1eacaa1/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+});

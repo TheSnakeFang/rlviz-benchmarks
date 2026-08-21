@@ -1,8 +1,10 @@
+import { actions, element, fact, factLink, loadIndex, rlvizURL, validSlug } from "./page-utils.js";
+
 const status = document.querySelector("#detail-status");
 const detail = document.querySelector("#detail");
 const slug = new URLSearchParams(location.search).get("slug");
 
-if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+if (!validSlug(slug)) {
   status.textContent = "Choose a benchmark from the catalog.";
 } else {
   loadDetail();
@@ -10,9 +12,7 @@ if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
 
 async function loadDetail() {
   try {
-    const response = await fetch("/catalog.json", { credentials: "omit" });
-    if (!response.ok) throw new Error(`Catalog returned HTTP ${response.status}`);
-    const catalog = await response.json();
+    const catalog = await loadIndex();
     const record = catalog.benchmarks?.find((candidate) => candidate.slug === slug);
     if (!record) throw new Error("Benchmark record not found");
     render(record, (catalog.claims ?? []).filter((claim) => claim.subject.benchmark_slug === slug));
@@ -54,11 +54,15 @@ function render(record, claims) {
 
 function trajectoryItem(trajectory) {
   const item = element("article", "detail-item");
-  item.append(element("h3", "", trajectory.task_id));
+  const task = element("a", "", trajectory.task_id);
+  task.href = `/task.html?${new URLSearchParams({ benchmark: slug, task: trajectory.task_id })}`;
+  const heading = element("h3");
+  heading.append(task);
+  item.append(heading);
   item.append(element("p", "", `${trajectory.provenance.agent} · ${trajectory.provenance.model} · ${trajectory.provenance.harness}`));
   item.append(element("p", "revision", `bundle sha256 ${trajectory.sha256}`));
-  const href = `https://rlviz.dev/?${new URLSearchParams({ bundle: trajectory.bundle_url, sha256: trajectory.sha256 })}`;
-  item.append(actions([["inspect trajectory", href], ["bundle source", trajectory.bundle_url]]));
+  const detailURL = `/trajectory.html?${new URLSearchParams({ benchmark: slug, id: trajectory.id })}`;
+  item.append(actions([["inspect trajectory", rlvizURL(trajectory)], ["trajectory details", detailURL], ["bundle source", trajectory.bundle_url]]));
   return item;
 }
 
@@ -82,13 +86,3 @@ function claimItem(claim) {
   item.append(actions(claim.evidence.map((evidence) => [evidence.kind, evidence.url])));
   return item;
 }
-
-function actions(links) {
-  const container = element("div", "detail-actions");
-  for (const [label, href] of links) { const link = element("a", "", label); link.href = href; link.rel = "noreferrer"; container.append(link); }
-  return container;
-}
-
-function fact(list, label, value, className = "") { list.append(element("dt", "", label), element("dd", className, value)); }
-function factLink(list, label, href, text, className = "") { const link = element("a", className, text); link.href = href; link.rel = "noreferrer"; const dd = element("dd"); dd.append(link); list.append(element("dt", "", label), dd); }
-function element(tag, className = "", text = "") { const node = document.createElement(tag); if (className) node.className = className; if (text) node.textContent = text; return node; }

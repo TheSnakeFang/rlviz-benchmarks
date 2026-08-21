@@ -36,6 +36,9 @@
       "license": "Apache-2.0",
       "reviewed": true,
       "redaction_confirmed": true,
+      "outcome": {
+        "reward": 0
+      },
       "provenance": {
         "agent": "mini-swe-agent; version unavailable in source",
         "model": "openai/gpt-oss-120b@together_ai",

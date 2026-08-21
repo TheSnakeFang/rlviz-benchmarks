@@ -4,6 +4,8 @@ import path from "node:path";
 const sha40 = /^[0-9a-f]{40}$/;
 const sha64 = /^[0-9a-f]{64}$/;
 const slug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const catalogID = /^[a-zA-Z0-9._-]+$/;
+const taskID = /^[^\u0000-\u001f\u007f]{1,300}$/;
 const allowedStates = new Set(["source-pinned", "audit-priority", "showcased", "deprecated"]);
 const reviewStates = new Set(["not-reviewed", "audit-priority", "reviewed"]);
 const claimTypes = new Set(["broken", "ambiguous", "unsolvable", "optional-field-mismatch", "nondeterministic", "leakage", "reward-hack", "provenance-gap", "license-gap", "other"]);
@@ -83,12 +85,16 @@ export function validateBenchmark(record) {
   if (record.trajectories.length && record.license.redistribution !== "allowed") throw new Error(`${record.slug} cannot publish trajectories while benchmark redistribution is blocked`);
   const ids = new Set();
   for (const trajectory of record.trajectories) {
-    exactKeys(trajectory, ["id", "task_id", "bundle_url", "sha256", "license", "reviewed", "redaction_confirmed", "provenance"], `${record.slug}.trajectory`);
-    if (!/^[a-zA-Z0-9._-]+$/.test(trajectory.id) || ids.has(trajectory.id)) throw new Error(`${record.slug} has an invalid or duplicate trajectory id`);
+    exactKeys(trajectory, ["id", "task_id", "bundle_url", "sha256", "license", "reviewed", "redaction_confirmed", "outcome", "provenance"], `${record.slug}.trajectory`);
+    if (!catalogID.test(trajectory.id) || ids.has(trajectory.id)) throw new Error(`${record.slug} has an invalid or duplicate trajectory id`);
     ids.add(trajectory.id);
-    if (!trajectory.task_id || !trajectory.license || trajectory.reviewed !== true || trajectory.redaction_confirmed !== true) throw new Error(`${record.slug}/${trajectory.id} lacks publication confirmations`);
+    if (!taskID.test(trajectory.task_id) || !trajectory.license || trajectory.reviewed !== true || trajectory.redaction_confirmed !== true) throw new Error(`${record.slug}/${trajectory.id} lacks publication confirmations`);
     publicHTTPS(trajectory.bundle_url, `${record.slug}/${trajectory.id} bundle URL`, { bundle: true });
     if (!sha64.test(trajectory.sha256)) throw new Error(`${record.slug}/${trajectory.id} must pin a full bundle SHA-256`);
+    if (trajectory.outcome !== undefined) {
+      exactKeys(trajectory.outcome, ["reward"], `${record.slug}/${trajectory.id}.outcome`);
+      if (!Number.isFinite(trajectory.outcome.reward)) throw new Error(`${record.slug}/${trajectory.id} must record a finite source-reported reward`);
+    }
     exactKeys(trajectory.provenance, ["agent", "model", "harness", "environment", "verifier", "run"], `${record.slug}/${trajectory.id}.provenance`);
     for (const field of ["agent", "model", "harness", "environment", "verifier", "run"]) if (!trajectory.provenance[field]) throw new Error(`${record.slug}/${trajectory.id} lacks ${field} provenance`);
   }

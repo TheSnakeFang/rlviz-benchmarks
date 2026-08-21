@@ -13,6 +13,7 @@
 - First evidence-grounded proposed verifier claim, kept distinct from a confirmed defect decision
 - Task and trajectory detail pages that preserve exact provenance and a direct RLViz handoff on mobile
 - Documented Harbor job/trial link contract: source-provided live pointers remain distinct from durable bundle evidence
+- Pinned SWE-rebench V2 trajectory availability review; the evaluated licensed corpus has zero exact task overlap and remains unpublished
 
 ## Next
 

@@ -2,13 +2,16 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const source = Object.freeze({
+const sharedSource = Object.freeze({
   dataset: "yoonholee/terminalbench-trajectories",
   revision: "04e8940f5b6736a7ce8d22224fe2f2af74163ed2",
-  row: 242,
-  trial_id: "882393f2-4c26-43c1-8865-b45508c948db",
   task_name: "adaptive-rejection-sampler"
 });
+export const sources = Object.freeze({
+  failure: Object.freeze({ ...sharedSource, row: 242, trial_id: "882393f2-4c26-43c1-8865-b45508c948db" }),
+  rewarded: Object.freeze({ ...sharedSource, row: 244, trial_id: "5c1740b8-0a8f-42ce-a38f-151748c23028" })
+});
+export const source = sources.failure;
 
 export function convertTerminalBenchRow(row, pin = source) {
   if (!row || row.trial_id !== pin.trial_id || row.task_name !== pin.task_name) throw new Error("source row does not match the pinned trial");
@@ -48,13 +51,13 @@ export function convertTerminalBenchRow(row, pin = source) {
   return `${records.map((record) => JSON.stringify(record)).join("\n")}\n`;
 }
 
-async function importPinnedRow(output) {
-  const metadata = await fetchJSON(`https://huggingface.co/api/datasets/${source.dataset}`);
-  if (metadata.sha !== source.revision) throw new Error(`dataset moved from pinned revision ${source.revision} to ${metadata.sha}`);
-  const response = await fetchJSON(`https://datasets-server.huggingface.co/rows?dataset=${encodeURIComponent(source.dataset)}&config=default&split=train&offset=${source.row}&length=1`);
+async function importPinnedRow(output, pin) {
+  const metadata = await fetchJSON(`https://huggingface.co/api/datasets/${pin.dataset}`);
+  if (metadata.sha !== pin.revision) throw new Error(`dataset moved from pinned revision ${pin.revision} to ${metadata.sha}`);
+  const response = await fetchJSON(`https://datasets-server.huggingface.co/rows?dataset=${encodeURIComponent(pin.dataset)}&config=default&split=train&offset=${pin.row}&length=1`);
   const row = response.rows?.[0];
-  if (row?.row_idx !== source.row) throw new Error("dataset server returned the wrong row");
-  await writeFile(output, convertTerminalBenchRow(row.row), { flag: "wx" });
+  if (row?.row_idx !== pin.row) throw new Error("dataset server returned the wrong row");
+  await writeFile(output, convertTerminalBenchRow(row.row, pin), { flag: "wx" });
   process.stdout.write(`${output}\n`);
 }
 
@@ -70,6 +73,7 @@ function normalizeDate(value) { return new Date(value).toISOString(); }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const output = process.argv[2];
-  if (!output) throw new Error("usage: node scripts/import-terminalbench-showcase.mjs OUTPUT.ndjson");
-  await importPinnedRow(path.resolve(output));
+  const sourceName = process.argv[3] ?? "failure";
+  if (!output || !sources[sourceName]) throw new Error("usage: node scripts/import-terminalbench-showcase.mjs OUTPUT.ndjson [failure|rewarded]");
+  await importPinnedRow(path.resolve(output), sources[sourceName]);
 }

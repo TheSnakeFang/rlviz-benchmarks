@@ -9,13 +9,14 @@
 - GitHub-native submission, review, stewardship, and deterministic contributor credit
 - Revision-pinned Harbor submission records, optional public job links, and explicit availability states
 - Benchmark detail pages for source provenance, runs, and evidence claims
-- First licensed, manually reviewed Terminal-Bench failure trajectory with a reproducible importer and digest-pinned RLViz bundle
+- First licensed, manually reviewed Terminal-Bench reward-0/reward-1 pair with a reproducible importer and digest-pinned RLViz bundles
+- First evidence-grounded proposed verifier claim, kept distinct from a confirmed defect decision
 - Task and trajectory detail pages that preserve exact provenance and a direct RLViz handoff on mobile
 
 ## Next
 
 1. Expand the licensed reviewed trajectory set beyond the first Terminal-Bench
-   sample. Each entry must pin the task, environment, verifier, harness, model,
+   task pair. Each entry must pin the task, environment, verifier, harness, model,
    agent, run, bundle, and source revisions.
 2. Evaluate stable Harbor Hub trial URLs as a task-level import boundary. Job
    links are supported; do not duplicate Harbor's runner, registry, or files.

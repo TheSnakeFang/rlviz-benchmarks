@@ -5,27 +5,33 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { contributorReputation, loadCatalog, loadClaims, validateBenchmark, validateClaim } from "../scripts/catalog.mjs";
-import { convertTerminalBenchRow, source as terminalBenchSource } from "../scripts/import-terminalbench-showcase.mjs";
+import { convertTerminalBenchRow, source as terminalBenchSource, sources as terminalBenchSources } from "../scripts/import-terminalbench-showcase.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("all catalog records have immutable, publication-safe provenance", async () => {
   const records = await loadCatalog(root);
   assert.deepEqual(records.map((record) => record.slug), ["harbor-index-1-4", "swe-bench-verified", "swe-rebench-v2", "terminal-bench-2"]);
-  assert.equal(records.flatMap((record) => record.trajectories).length, 1);
+  assert.equal(records.flatMap((record) => record.trajectories).length, 2);
   assert.equal(records.flatMap((record) => record.external_runs).length, 1);
   assert.equal(records.find((record) => record.slug === "harbor-index-1-4").external_runs[0].availability.state, "source-record-only");
   assert.equal(records.filter((record) => record.license.redistribution === "blocked").length, 2);
-  assert.deepEqual(await loadClaims(root, records), []);
+  const claims = await loadClaims(root, records);
+  assert.equal(claims.length, 1);
+  assert.equal(claims[0].claim_type, "reward-hack");
+  const evidence = claims[0].evidence.find((item) => item.kind === "trajectory");
+  const trajectory = records.find((record) => record.slug === claims[0].subject.benchmark_slug).trajectories.find((item) => item.task_id === claims[0].subject.task_id && item.bundle_url === evidence.url);
+  assert.equal(evidence.sha256, trajectory.sha256);
 });
 
-test("published bundle bytes match the catalog digest", async () => {
+test("published bundle bytes match every catalog digest", async () => {
   const records = await loadCatalog(root);
-  const trajectory = records.find((record) => record.slug === "terminal-bench-2").trajectories[0];
-  const bundle = await readFile(path.join(root, "public", "bundles", path.basename(new URL(trajectory.bundle_url).pathname)));
-  assert.equal(bundle.subarray(0, 2).toString(), "PK");
-  assert.equal(createHash("sha256").update(bundle).digest("hex"), trajectory.sha256);
-  assert.ok(bundle.length < 32 * 1024 * 1024);
+  for (const trajectory of records.flatMap((record) => record.trajectories)) {
+    const bundle = await readFile(path.join(root, "public", "bundles", path.basename(new URL(trajectory.bundle_url).pathname)));
+    assert.equal(bundle.subarray(0, 2).toString(), "PK");
+    assert.equal(createHash("sha256").update(bundle).digest("hex"), trajectory.sha256);
+    assert.ok(bundle.length < 32 * 1024 * 1024);
+  }
 });
 
 test("claims bind to an exact catalog revision and require review decisions", async () => {
@@ -106,6 +112,10 @@ test("Terminal-Bench showcase conversion preserves exact source facts", () => {
   assert.deepEqual(records.filter((record) => record.record_type === "event").map((record) => record.kind), ["message", "generation", "tool", "observation"]);
   assert.equal(records.find((record) => record.name === "pass").value, false);
   assert.equal(records.at(-1).records, records.length - 1);
+  assert.equal(terminalBenchSources.rewarded.row, 244);
+  assert.notEqual(terminalBenchSources.rewarded.trial_id, terminalBenchSource.trial_id);
+  const rewarded = convertTerminalBenchRow({ ...row, trial_id: terminalBenchSources.rewarded.trial_id, reward: 1 }, terminalBenchSources.rewarded).trim().split("\n").map(JSON.parse);
+  assert.equal(rewarded.find((record) => record.name === "pass").value, true);
 });
 
 function fixture() {

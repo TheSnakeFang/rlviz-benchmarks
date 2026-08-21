@@ -1,0 +1,31 @@
+{
+  "schema_version": "rlviz.dev/benchmark-claim/v1",
+  "id": "claim-terminal-bench-2-ars-verifier-false-positive",
+  "subject": {
+    "benchmark_slug": "terminal-bench-2",
+    "benchmark_revision": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+    "task_id": "adaptive-rejection-sampler",
+    "component": "verifier"
+  },
+  "claim_type": "reward-hack",
+  "statement": "A source-reward-1 trajectory dispatches only recognized normal and exponential inputs to built-in samplers instead of implementing the task's required adaptive rejection sampler, indicating that the pinned verifier may accept a solution that misses the primary algorithm requirement.",
+  "severity": "high",
+  "status": "proposed",
+  "evidence": [
+    {
+      "kind": "trajectory",
+      "url": "https://raw.githubusercontent.com/TheSnakeFang/rlviz-benchmarks/main/public/bundles/terminal-bench-2-adaptive-rejection-sampler-mini-swe-agent-reward-1.rlviz",
+      "sha256": "a60152d61c996b47329708e48601a102e9ccf7549ec5882c29e2d9f061faac01",
+      "note": "The full reviewed trajectory preserves the implementation, test output, completion flow, and source-reported reward 1."
+    },
+    {
+      "kind": "source",
+      "url": "https://huggingface.co/datasets/yoonholee/terminalbench-trajectories/tree/04e8940f5b6736a7ce8d22224fe2f2af74163ed2",
+      "note": "Pinned public trajectory dataset, row 244."
+    }
+  ],
+  "reporter": {
+    "github": "TheSnakeFang"
+  },
+  "created_at": "2026-08-21T00:08:43Z"
+}

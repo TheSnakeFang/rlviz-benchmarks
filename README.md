@@ -7,7 +7,7 @@ the local-first reader through an explicit, SHA-256-pinned link.
 
 The catalog does not mirror whole task sets, claim that a benchmark is sound,
 or publish a new aggregate ranking. It includes one deliberately small,
-reviewed Terminal-Bench failure showcase; trajectories whose redistribution
+reviewed Terminal-Bench reward-0/reward-1 pair; trajectories whose redistribution
 rights or provenance have not been verified remain unpublished. Harbor-backed
 runs remain external records: this catalog pins the source submission and
 reports whether its Harbor Hub job is still publicly reachable without
@@ -66,11 +66,12 @@ moved from its cataloged Hugging Face revision. It then requests one exact row
 and emits canonical RLViz NDJSON without filling missing source facts:
 
 ```bash
-node scripts/import-terminalbench-showcase.mjs /tmp/terminalbench.ndjson
+node scripts/import-terminalbench-showcase.mjs /tmp/terminalbench.ndjson failure
 rlviz bundle create /tmp/terminalbench.ndjson --out reviewed.rlviz \
   --title "Terminal-Bench 2.0 · adaptive-rejection-sampler" \
   --license Apache-2.0 --reviewed --redaction-confirmed
 ```
 
 The affirmative review flags belong only after inspecting the complete emitted
-trace. The importer does not make those judgments.
+trace. The importer does not make those judgments. Pass `rewarded` instead of
+`failure` to reproduce the paired source-reported reward-1 trajectory.

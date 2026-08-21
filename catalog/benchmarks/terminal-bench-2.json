@@ -3,7 +3,7 @@
   "slug": "terminal-bench-2",
   "name": "Terminal-Bench 2.0",
   "catalog_state": "showcased",
-  "summary": "Official terminal-agent benchmark source with one reviewed failure trajectory published as a digest-pinned RLViz bundle.",
+  "summary": "Official terminal-agent benchmark source with a reviewed reward-0/reward-1 trajectory pair published as digest-pinned RLViz bundles.",
   "upstream": {
     "kind": "github",
     "url": "https://github.com/harbor-framework/terminal-bench-2",
@@ -46,6 +46,26 @@
         "environment": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
         "verifier": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
         "run": "trial 882393f2-4c26-43c1-8865-b45508c948db"
+      }
+    },
+    {
+      "id": "adaptive-rejection-sampler-mini-swe-agent-gpt-oss-120b-trial-5c1740b8",
+      "task_id": "adaptive-rejection-sampler",
+      "bundle_url": "https://raw.githubusercontent.com/TheSnakeFang/rlviz-benchmarks/main/public/bundles/terminal-bench-2-adaptive-rejection-sampler-mini-swe-agent-reward-1.rlviz",
+      "sha256": "a60152d61c996b47329708e48601a102e9ccf7549ec5882c29e2d9f061faac01",
+      "license": "Apache-2.0",
+      "reviewed": true,
+      "redaction_confirmed": true,
+      "outcome": {
+        "reward": 1
+      },
+      "provenance": {
+        "agent": "mini-swe-agent; version unavailable in source",
+        "model": "openai/gpt-oss-120b@together_ai",
+        "harness": "yoonholee/terminalbench-trajectories@04e8940f5b6736a7ce8d22224fe2f2af74163ed2 row 244",
+        "environment": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
+        "verifier": "terminal-bench-2@2fd12b88aafdd04a52c298e3940bcb189f9766d6/adaptive-rejection-sampler",
+        "run": "trial 5c1740b8-0a8f-42ce-a38f-151748c23028"
       }
     }
   ]

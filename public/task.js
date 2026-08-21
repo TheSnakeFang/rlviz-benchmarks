@@ -44,6 +44,7 @@ function render(benchmark, trajectories) {
     item.append(element("h3", "", trajectory.provenance.agent));
     item.append(element("p", "", trajectory.provenance.model));
     item.append(element("p", "", `source-reported reward ${trajectory.outcome?.reward ?? "unavailable in source"}`));
+    item.append(element("p", "revision", trajectory.provenance.run));
     item.append(element("p", "revision", `bundle sha256 ${trajectory.sha256}`));
     const detailURL = `/trajectory.html?${new URLSearchParams({ benchmark: benchmark.slug, id: trajectory.id })}`;
     item.append(actions([["trajectory details", detailURL], ["inspect in RLViz", rlvizURL(trajectory)]]));
